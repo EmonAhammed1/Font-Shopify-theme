@@ -452,24 +452,27 @@
         margin-top: 4px !important;
       }
 
-      .product-information [data-block-type="product-description"],
-      .product-information [data-block-type="product-description"] *,
-      .product-information [data-block-type="product-description"] p,
-      .product-information [data-block-type="product-description"] li,
-      .product-information [data-block-type="product-description"] span,
-      ._product-details [data-block-type="product-description"] *,
-      ._product-details [data-block-type="product-description"] p,
-      ._product-details [data-block-type="product-description"] li,
-      .product__description,
-      .product__description *,
-      .product__description p,
-      .product__description li {
-        font-size: 1.75rem !important;
+      /* Massive Ultra-Prominent Product Description Styling */
+      [data-block-type="product-description"],
+      [data-block-type="product-description"] *,
+      [data-block-type="product-description"] p,
+      [data-block-type="product-description"] ul,
+      [data-block-type="product-description"] li,
+      [data-block-type="product-description"] span,
+      .product-description,
+      .product-description *,
+      .product-description p,
+      .product-description li,
+      .product-details [data-block-type="product-description"] *,
+      .product-details [data-block-type="product-description"] p,
+      .product-details [data-block-type="product-description"] li,
+      .product-details .text-block,
+      .product-details [data-block-type="product-description"] .text-block {
+        font-size: 2.3rem !important;
         font-weight: 500 !important;
-        line-height: 1.6 !important;
+        line-height: 1.55 !important;
         color: #111111 !important;
-        margin-top: 12px !important;
-        margin-bottom: 12px !important;
+        --font-size: 2.3rem !important;
       }
 
       @media screen and (max-width: 749px) {
@@ -486,19 +489,21 @@
           font-size: 1.4rem !important;
         }
 
-        .product-information [data-block-type="product-description"],
-        .product-information [data-block-type="product-description"] *,
-        .product-information [data-block-type="product-description"] p,
-        .product-information [data-block-type="product-description"] li,
-        ._product-details [data-block-type="product-description"] *,
-        ._product-details [data-block-type="product-description"] p,
-        ._product-details [data-block-type="product-description"] li,
-        .product__description,
-        .product__description *,
-        .product__description p,
-        .product__description li {
-          font-size: 1.35rem !important;
-          line-height: 1.55 !important;
+        [data-block-type="product-description"],
+        [data-block-type="product-description"] *,
+        [data-block-type="product-description"] p,
+        [data-block-type="product-description"] ul,
+        [data-block-type="product-description"] li,
+        .product-description,
+        .product-description *,
+        .product-description p,
+        .product-description li,
+        .product-details [data-block-type="product-description"] *,
+        .product-details [data-block-type="product-description"] p,
+        .product-details [data-block-type="product-description"] li {
+          font-size: 1.6rem !important;
+          line-height: 1.5 !important;
+          --font-size: 1.6rem !important;
         }
       }
     </style>

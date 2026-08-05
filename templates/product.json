@@ -231,7 +231,7 @@
                 "alignment": "left",
                 "type_preset": "rte",
                 "font": "var(--font-body--family)",
-                "font_size": "1.75rem",
+                "font_size": "2.3rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
