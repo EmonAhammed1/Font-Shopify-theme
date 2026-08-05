@@ -8,98 +8,130 @@
   .ai-welcome-banner-{{ ai_gen_id }} {
     display: block;
     width: 100%;
-    background-color: {{ block.settings.background_color }};
-    padding: {{ block.settings.padding_vertical }}px {{ block.settings.padding_horizontal }}px;
-    text-align: {{ block.settings.text_alignment }};
+    background-color: transparent;
+    padding: 30px 15px;
+    text-align: center;
   }
 
   .ai-welcome-banner__container-{{ ai_gen_id }} {
-    max-width: {{ block.settings.max_width }}px;
+    max-width: 960px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    align-items: {{ block.settings.text_alignment }};
-    gap: 20px;
+    align-items: center;
+    gap: 22px;
+    background: linear-gradient(145deg, #181818 0%, #111111 60%, #1b090b 100%);
+    border: 1px solid rgba(211, 47, 47, 0.35);
+    border-radius: 20px;
+    padding: 56px 40px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 35px rgba(211, 47, 47, 0.15);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-welcome-banner__container-{{ ai_gen_id }}::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(211, 47, 47, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
   }
 
   .ai-welcome-banner__headline-{{ ai_gen_id }} {
-    font-size: {{ block.settings.headline_size }}px;
-    font-weight: 700;
-    color: {{ block.settings.text_color }};
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    font-weight: 800;
+    color: #ffffff;
     margin: 0;
-    line-height: 1.2;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
   }
 
   .ai-welcome-banner__subtext-{{ ai_gen_id }} {
-    font-size: {{ block.settings.subtext_size }}px;
-    color: {{ block.settings.text_color }};
+    font-size: clamp(1rem, 1.8vw, 1.15rem);
+    color: #cccccc;
     margin: 0;
-    line-height: 1.5;
-    opacity: 0.9;
+    line-height: 1.6;
+    max-width: 650px;
   }
 
   .ai-welcome-banner__discount-{{ ai_gen_id }} {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    background-color: {{ block.settings.discount_bg_color }};
-    color: {{ block.settings.discount_text_color }};
-    padding: 12px 20px;
-    border-radius: {{ block.settings.discount_border_radius }}px;
-    font-size: {{ block.settings.discount_font_size }}px;
+    gap: 10px;
+    background: rgba(211, 47, 47, 0.12);
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 0.95rem;
     font-weight: 600;
-    border: 2px dashed {{ block.settings.discount_border_color }};
+    border: 1.5px dashed #d32f2f;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+  }
+
+  .ai-welcome-banner__discount-{{ ai_gen_id }}:hover {
+    background: rgba(211, 47, 47, 0.25);
+    border-color: #ff4d4d;
+    transform: scale(1.03);
+    box-shadow: 0 4px 20px rgba(211, 47, 47, 0.3);
   }
 
   .ai-welcome-banner__discount-label-{{ ai_gen_id }} {
-    opacity: 0.9;
+    color: #b0b0b0;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .ai-welcome-banner__discount-code-{{ ai_gen_id }} {
-    font-family: monospace;
-    letter-spacing: 1px;
-    font-size: {{ block.settings.discount_font_size | plus: 2 }}px;
+    font-family: inherit;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #ff4d4d;
+    font-size: 1.1rem;
+  }
+
+  .ai-welcome-banner__copy-icon {
+    font-size: 0.85rem;
+    margin-left: 4px;
+    opacity: 0.8;
   }
 
   .ai-welcome-banner__button-{{ ai_gen_id }} {
-    display: inline-block;
-    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
-    background-color: {{ block.settings.button_color }};
-    color: {{ block.settings.button_text_color }};
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 40px;
+    background-color: #d32f2f;
+    color: #ffffff;
     text-decoration: none;
-    border-radius: {{ block.settings.button_border_radius }}px;
-    font-size: {{ block.settings.button_font_size }}px;
-    font-weight: 600;
+    border-radius: 50px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     transition: all 0.3s ease;
     border: none;
     cursor: pointer;
+    box-shadow: 0 6px 20px rgba(211, 47, 47, 0.35);
   }
 
   .ai-welcome-banner__button-{{ ai_gen_id }}:hover {
-    background-color: {{ block.settings.button_hover_color }};
-    color: {{ block.settings.button_hover_text_color }};
-    transform: translateY(-2px);
+    background-color: #ffffff;
+    color: #d32f2f;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.25);
   }
 
   @media screen and (max-width: 749px) {
-    .ai-welcome-banner-{{ ai_gen_id }} {
-      padding: {{ block.settings.padding_vertical | times: 0.7 }}px {{ block.settings.padding_horizontal | times: 0.7 }}px;
-    }
-
-    .ai-welcome-banner__headline-{{ ai_gen_id }} {
-      font-size: {{ block.settings.headline_size | times: 0.7 }}px;
-    }
-
-    .ai-welcome-banner__subtext-{{ ai_gen_id }} {
-      font-size: {{ block.settings.subtext_size | times: 0.9 }}px;
-    }
-
-    .ai-welcome-banner__discount-{{ ai_gen_id }} {
-      font-size: {{ block.settings.discount_font_size | times: 0.9 }}px;
-    }
-
-    .ai-welcome-banner__button-{{ ai_gen_id }} {
-      font-size: {{ block.settings.button_font_size | times: 0.9 }}px;
+    .ai-welcome-banner__container-{{ ai_gen_id }} {
+      padding: 36px 20px;
+      border-radius: 16px;
     }
   }
 {% endstyle %}
@@ -119,22 +151,27 @@
     {% endif %}
 
     {% if block.settings.show_discount and block.settings.discount_code != blank %}
-      <div class="ai-welcome-banner__discount-{{ ai_gen_id }}">
+      <div 
+        class="ai-welcome-banner__discount-{{ ai_gen_id }}"
+        onclick="navigator.clipboard.writeText('{{ block.settings.discount_code }}'); this.querySelector('.ai-welcome-banner__discount-label-{{ ai_gen_id }}').textContent = 'COPIED!'; setTimeout(() => this.querySelector('.ai-welcome-banner__discount-label-{{ ai_gen_id }}').textContent = '{{ block.settings.discount_label }}', 2500);"
+        title="Click to copy discount code"
+      >
         <span class="ai-welcome-banner__discount-label-{{ ai_gen_id }}">
           {{ block.settings.discount_label }}
         </span>
         <span class="ai-welcome-banner__discount-code-{{ ai_gen_id }}">
           {{ block.settings.discount_code }}
         </span>
+        <span class="ai-welcome-banner__copy-icon">📋</span>
       </div>
     {% endif %}
 
-    {% if block.settings.button_text != blank and block.settings.button_link != blank %}
+    {% if block.settings.button_text != blank %}
       <a 
-        href="{{ block.settings.button_link }}" 
+        href="{{ block.settings.button_link | default: 'shopify://collections/all' }}" 
         class="ai-welcome-banner__button-{{ ai_gen_id }}"
       >
-        {{ block.settings.button_text }}
+        {{ block.settings.button_text }} →
       </a>
     {% endif %}
   </div>
