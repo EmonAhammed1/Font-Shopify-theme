@@ -1259,8 +1259,8 @@
         "ai_gen_block_7229d7d_akk8C9": {
           "type": "ai_gen_block_7229d7d",
           "settings": {
-            "headline": "Welcome to Font Boulderwear",
-            "subtext": "<p>Discover our exclusive collection of Font Project T-shirts and apparel</p>",
+            "headline": "Gear Up For Your Next Climb",
+            "subtext": "<p>Engineered for ultimate mobility, durability, and style on and off the rock</p>",
             "show_discount": true,
             "discount_label": "Use code:",
             "discount_code": "WELCOME10",
@@ -1269,7 +1269,7 @@
             "discount_bg_color": "#ef090d",
             "discount_text_color": "#000000",
             "discount_border_color": "#ffd700",
-            "button_text": "Shop Now",
+            "button_text": "Explore Collection →",
             "button_link": "",
             "button_font_size": 16,
             "button_padding_vertical": 14,
