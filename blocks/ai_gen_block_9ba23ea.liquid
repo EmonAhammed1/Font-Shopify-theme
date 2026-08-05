@@ -163,93 +163,100 @@
   <image-carousel-{{ ai_gen_id }} class="ai-image-carousel-container-{{ ai_gen_id }}">
     <div class="ai-image-carousel-track-{{ ai_gen_id }}">
       {% if block.settings.image_1 != blank %}
-        <div class="ai-image-carousel-slide-{{ ai_gen_id }}">
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
           <img
             src="{{ block.settings.image_1 | image_url: width: 1600 }}"
             alt="{{ block.settings.image_1.alt | escape }}"
             loading="lazy"
             width="{{ block.settings.image_1.width }}"
             height="{{ block.settings.image_1.height }}"
+            draggable="false"
           >
-        </div>
+        </a>
       {% else %}
-        <div class="ai-image-carousel-slide-{{ ai_gen_id }}">
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
           <div class="ai-image-carousel-placeholder-{{ ai_gen_id }}">
             {{ 'image' | placeholder_svg_tag }}
           </div>
-        </div>
+        </a>
       {% endif %}
 
       {% if block.settings.image_2 != blank %}
-        <div class="ai-image-carousel-slide-{{ ai_gen_id }}">
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
           <img
             src="{{ block.settings.image_2 | image_url: width: 1600 }}"
             alt="{{ block.settings.image_2.alt | escape }}"
             loading="lazy"
             width="{{ block.settings.image_2.width }}"
             height="{{ block.settings.image_2.height }}"
+            draggable="false"
           >
-        </div>
+        </a>
       {% endif %}
 
       {% if block.settings.image_3 != blank %}
-        <div class="ai-image-carousel-slide-{{ ai_gen_id }}">
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
           <img
             src="{{ block.settings.image_3 | image_url: width: 1600 }}"
             alt="{{ block.settings.image_3.alt | escape }}"
             loading="lazy"
             width="{{ block.settings.image_3.width }}"
             height="{{ block.settings.image_3.height }}"
+            draggable="false"
           >
-        </div>
+        </a>
       {% endif %}
 
       {% if block.settings.image_4 != blank %}
-        <div class="ai-image-carousel-slide-{{ ai_gen_id }}">
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
           <img
             src="{{ block.settings.image_4 | image_url: width: 1600 }}"
             alt="{{ block.settings.image_4.alt | escape }}"
             loading="lazy"
             width="{{ block.settings.image_4.width }}"
             height="{{ block.settings.image_4.height }}"
+            draggable="false"
           >
-        </div>
+        </a>
       {% endif %}
 
       {% if block.settings.image_5 != blank %}
-        <div class="ai-image-carousel-slide-{{ ai_gen_id }}">
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
           <img
             src="{{ block.settings.image_5 | image_url: width: 1600 }}"
             alt="{{ block.settings.image_5.alt | escape }}"
             loading="lazy"
             width="{{ block.settings.image_5.width }}"
             height="{{ block.settings.image_5.height }}"
+            draggable="false"
           >
-        </div>
+        </a>
       {% endif %}
 
       {% if block.settings.image_6 != blank %}
-        <div class="ai-image-carousel-slide-{{ ai_gen_id }}">
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
           <img
             src="{{ block.settings.image_6 | image_url: width: 1600 }}"
             alt="{{ block.settings.image_6.alt | escape }}"
             loading="lazy"
             width="{{ block.settings.image_6.width }}"
             height="{{ block.settings.image_6.height }}"
+            draggable="false"
           >
-        </div>
+        </a>
       {% endif %}
 
       {% if block.settings.image_7 != blank %}
-        <div class="ai-image-carousel-slide-{{ ai_gen_id }}">
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
           <img
             src="{{ block.settings.image_7 | image_url: width: 1600 }}"
             alt="{{ block.settings.image_7.alt | escape }}"
             loading="lazy"
             width="{{ block.settings.image_7.width }}"
             height="{{ block.settings.image_7.height }}"
+            draggable="false"
           >
-        </div>
+        </a>
       {% endif %}
     </div>
 
@@ -457,7 +464,9 @@
         let startY = 0;
         let isDragging = false;
         let dragOffsetX = 0;
+        let hasDragged = false;
         const SWIPE_THRESHOLD = 50;
+        const CLICK_BLOCK_THRESHOLD = 5;
 
         const onStart = (e) => {
           const point = e.touches ? e.touches[0] : e;
@@ -465,6 +474,7 @@
           startY = point.clientY;
           isDragging = true;
           dragOffsetX = 0;
+          hasDragged = false;
           if (this.autoplayInterval) clearInterval(this.autoplayInterval);
           this.track.style.transition = 'none';
         };
@@ -477,6 +487,7 @@
           if (Math.abs(dx) < Math.abs(dy) && e.touches) return;
           if (e.cancelable) e.preventDefault();
           dragOffsetX = dx;
+          if (Math.abs(dx) > CLICK_BLOCK_THRESHOLD) hasDragged = true;
           const slidesToShow = this.getSlidesToShow();
           const gap = parseInt('{{ block.settings.slide_gap | default: 16 }}', 10) || 16;
           const containerWidth = this.offsetWidth;
@@ -502,6 +513,15 @@
           const autoplaySpeed = {{ block.settings.autoplay_speed | default: 5 }} * 1000;
           if (autoplayEnabled) this.startAutoplayTimer(autoplaySpeed);
         };
+
+        // Suppress click if user was dragging
+        this.track.addEventListener('click', (e) => {
+          if (hasDragged) {
+            e.preventDefault();
+            e.stopPropagation();
+            hasDragged = false;
+          }
+        }, true);
 
         // Touch events
         this.track.addEventListener('touchstart', onStart, { passive: true });
@@ -575,6 +595,16 @@
       "step": 2,
       "unit": "px",
       "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Click Link"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Slide click destination",
+      "info": "Where to go when a slide is clicked (default: /collections/all)"
     },
     {
       "type": "header",
