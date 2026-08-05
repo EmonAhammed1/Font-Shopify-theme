@@ -113,13 +113,67 @@
     {% endif %}
 
     <style>
-      /* Spacious line spacing for Fontainebleau hero text section */
+      /* Fontainebleau hero text section line spacing & reveal animation */
       [id*="hero_pjNAy4"] h4,
       [id*="hero_pjNAy4"] .text-block,
       [id*="hero_pjNAy4"] .custom-typography {
-        line-height: 1.95 !important;
-        --line-height: 1.95 !important;
+        line-height: 1.55 !important;
+        --line-height: 1.55 !important;
+      }
+
+      /* Scroll reveal initial state */
+      [id*="hero_pjNAy4"] .text-block,
+      [id*="hero_pjNAy4"] [data-block-type="image"],
+      [id*="hero_pjNAy4"] .button {
+        opacity: 0;
+        transform: translateY(35px);
+        transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+      }
+
+      /* Staggered delay for child elements */
+      [id*="hero_pjNAy4"] [data-block-type="image"] {
+        transition-delay: 0.2s;
+      }
+      [id*="hero_pjNAy4"] .button {
+        transition-delay: 0.35s;
+      }
+
+      /* Revealed active state when scrolled into view */
+      [id*="hero_pjNAy4"].section-revealed .text-block,
+      [id*="hero_pjNAy4"].section-revealed [data-block-type="image"],
+      [id*="hero_pjNAy4"].section-revealed .button {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
       }
     </style>
+
+    <script>
+      (function () {
+        function initScrollReveal() {
+          const section = document.querySelector('[id*="hero_pjNAy4"]');
+          if (!section) return;
+
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                section.classList.add('section-revealed');
+                observer.unobserve(section);
+              }
+            });
+          }, {
+            threshold: 0.2
+          });
+
+          observer.observe(section);
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initScrollReveal);
+        } else {
+          initScrollReveal();
+        }
+      })();
+    </script>
   </body>
 </html>
