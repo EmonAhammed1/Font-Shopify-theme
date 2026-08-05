@@ -305,26 +305,33 @@
         transform: scale(1.03) !important;
       }
 
-      /* Title & Price text container - Generous side & top padding */
+      /* Title & Price text container - Guaranteed 20px Left Padding */
       .product-card [data-block-type="product-title"],
       .product-card [data-block-type="price"],
       .product-card .product-title,
-      .product-card .price {
+      .product-card .price,
+      .product-card .text-block,
+      .product-card [data-block-type="product-title"] .text-block,
+      .product-card [data-block-type="price"] .text-block {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
         padding-inline: 20px !important;
+        box-sizing: border-box !important;
+        width: 100% !important;
       }
 
       .product-card [data-block-type="product-title"],
       .product-card .product-title {
-        padding-top: 18px !important;
-        padding-bottom: 4px !important;
+        margin-top: 14px !important;
+        margin-bottom: 2px !important;
       }
 
       .product-card [data-block-type="price"],
       .product-card .price {
-        padding-bottom: 16px !important;
+        margin-bottom: 14px !important;
       }
 
-      /* Title Typography - Prominent & Bold */
+      /* Title Typography - Elegant Semi-Bold 1.15rem (Not overly heavy) */
       .product-card product-title,
       .product-card .product-title,
       .product-card h2,
@@ -335,22 +342,22 @@
       .product-card [data-block-type="product-title"],
       .product-card [data-block-type="product-title"] *,
       .product-card [class*="title"] {
-        font-size: 1.35rem !important;
-        font-weight: 800 !important;
+        font-size: 1.15rem !important;
+        font-weight: 600 !important;
         color: #111111 !important;
-        line-height: 1.3 !important;
+        line-height: 1.35 !important;
         letter-spacing: -0.01em !important;
         text-decoration: none !important;
       }
 
-      /* Price Typography - Larger & Clear */
+      /* Price Typography - Clean 1.05rem, Semi-Bold */
       .product-card .price,
       .product-card .price-item,
       .product-card [data-block-type="price"],
       .product-card [data-block-type="price"] * {
-        font-size: 1.12rem !important;
-        font-weight: 700 !important;
-        color: #222222 !important;
+        font-size: 1.05rem !important;
+        font-weight: 600 !important;
+        color: #444444 !important;
       }
 
       /* Bottom Full-Width CTA Button (No excessive top gap) */
