@@ -111,9 +111,5 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
-
-    {% if template.name == 'index' or request.page_type == 'index' or template contains 'index' %}
-      {% render 'homepage-product-card-style' %}
-    {% endif %}
   </body>
 </html>
