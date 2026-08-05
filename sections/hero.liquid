@@ -601,13 +601,16 @@
 </script>
 
 {% stylesheet %}
-  /* Safety font clamping for jumbo text to prevent overflow */
+  /* Large Jumbo Text styling & alignment */
   jumbo-text, .jumbo-text, .hero .jumbo-text-line {
-    font-size: clamp(2rem, 7vw, 5rem) !important;
+    font-size: clamp(3rem, 10.5vw, 10.5rem) !important;
+    width: 100% !important;
     max-width: 100% !important;
-    overflow: hidden;
-    white-space: normal !important;
-    word-break: break-word;
+    text-align: center !important;
+    letter-spacing: -0.01em;
+    line-height: 0.95;
+    white-space: nowrap !important;
+    overflow: visible;
   }
 
   /* Typewriter Animation Styles */
@@ -650,6 +653,7 @@
 
   .typewriter-word {
     display: inline-block;
+    margin-right: 0.32em;
     opacity: 0;
     transform: translateY(12px) scale(0.96);
     filter: blur(4px);
@@ -695,17 +699,17 @@
     overflow: hidden;
     border: var(--hero-border-width) var(--hero-border-style) rgb(var(--color-border-rgb) / var(--hero-border-opacity));
     min-height: inherit;
-    align-items: var(--vertical-alignment-mobile);
-    justify-content: var(--horizontal-alignment);
+    align-items: center;
+    justify-content: center;
     z-index: var(--layer-base);
 
     @media screen and (min-width: 750px) {
-      align-items: var(--vertical-alignment);
+      align-items: center;
     }
   }
 
   .hero__content-wrapper.page-width {
-    grid-column: 2 / 3;
+    grid-column: 1 / -1;
   }
 
   .hero__content-wrapper {
@@ -717,8 +721,14 @@
     border: none;
     border-radius: 0;
     box-shadow: none;
-    margin: 0;
+    margin: 0 auto;
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
   }
 
   .hero__content-wrapper h1,
