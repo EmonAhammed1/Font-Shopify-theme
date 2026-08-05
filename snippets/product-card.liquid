@@ -113,27 +113,14 @@
   >
     {{ children }}
     {% unless onboarding %}
-      {% if product.has_only_default_variant and product.available %}
-        <form method="post" action="/cart/add" class="custom-product-card__form" data-type="add-to-cart-form" style="width:100%; margin-top:auto;">
-          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-          <button
-            type="submit"
-            name="add"
-            class="custom-product-card__cta-btn custom-product-card__add-to-cart-btn"
-            data-variant-id="{{ product.selected_or_first_available_variant.id }}"
-          >
-            <span class="btn-text">ADD TO BAG {% if product.price > 0 %}| {{ product.price | money }}{% endif %}</span>
-          </button>
-        </form>
-      {% elsif product.available == false %}
-        <button
-          type="button"
-          disabled
+      {% if product.available == false %}
+        <a
+          href="{{ variant_to_link.url }}"
           class="custom-product-card__cta-btn custom-product-card__cta-btn--disabled"
-          style="width:100%; margin-top:auto; opacity:0.6; cursor:not-allowed;"
+          style="width:100%; margin-top:auto; opacity:0.75;"
         >
           SOLD OUT
-        </button>
+        </a>
       {% else %}
         <a
           href="{{ variant_to_link.url }}"
