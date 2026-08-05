@@ -252,28 +252,53 @@
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
       }
 
-      /* Image area inside card - Full width, zero side gap, uniform fill */
+      /* Image area inside card - Strictly Equal Height for All Images */
       .product-card-gallery,
       .product-card-gallery__carousel,
       .product-card-gallery__media,
-      .product-card media-gallery {
+      .product-card media-gallery,
+      .product-card slideshow-component,
+      .product-card .media,
+      .product-card [class*="media"] {
+        position: relative !important;
         background-color: #F7F3EE !important;
         padding: 0 !important;
         width: 100% !important;
-        aspect-ratio: 4 / 5 !important;
+        height: 290px !important;
+        min-height: 290px !important;
+        max-height: 290px !important;
         display: block !important;
         overflow: hidden !important;
       }
 
       .product-card-gallery img,
       .product-card media-gallery img,
+      .product-card .media img,
       .product-card img {
-        object-fit: cover !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
         width: 100% !important;
         height: 100% !important;
+        object-fit: cover !important;
+        object-position: center top !important;
         max-height: none !important;
         display: block !important;
         transition: transform 0.4s ease !important;
+      }
+
+      @media screen and (max-width: 749px) {
+        .product-card-gallery,
+        .product-card-gallery__carousel,
+        .product-card-gallery__media,
+        .product-card media-gallery,
+        .product-card slideshow-component,
+        .product-card .media,
+        .product-card [class*="media"] {
+          height: 230px !important;
+          min-height: 230px !important;
+          max-height: 230px !important;
+        }
       }
 
       .product-card:hover img {
