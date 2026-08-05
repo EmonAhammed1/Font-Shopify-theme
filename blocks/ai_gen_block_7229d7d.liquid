@@ -8,23 +8,30 @@
   .ai-welcome-banner-{{ ai_gen_id }} {
     display: block;
     width: 100%;
-    background-color: transparent;
-    padding: 30px 15px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url("{{ 'bouldering_promo_bg.png' | asset_url }}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    padding: 85px 20px;
     text-align: center;
+    position: relative;
   }
 
   .ai-welcome-banner__container-{{ ai_gen_id }} {
-    max-width: 960px;
+    max-width: 900px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 22px;
-    background: linear-gradient(145deg, #181818 0%, #111111 60%, #1b090b 100%);
-    border: 1px solid rgba(211, 47, 47, 0.35);
-    border-radius: 20px;
-    padding: 56px 40px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 35px rgba(211, 47, 47, 0.15);
+    background: rgba(18, 18, 18, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    border-radius: 24px;
+    padding: 60px 40px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(211, 47, 47, 0.25);
     position: relative;
     overflow: hidden;
   }
