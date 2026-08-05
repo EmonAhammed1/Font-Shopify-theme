@@ -415,6 +415,59 @@
         } else {
           initScrollReveal();
         }
+
+        /* Instant AJAX Add To Cart Script for Single-Variant Cards */
+        document.addEventListener('submit', function(e) {
+          const form = e.target.closest('[data-type="add-to-cart-form"]');
+          if (!form) return;
+
+          e.preventDefault();
+          const btn = form.querySelector('.custom-product-card__add-to-cart-btn');
+          const btnText = btn ? btn.querySelector('.btn-text') : null;
+          const originalText = btnText ? btnText.textContent : 'ADD TO BAG';
+
+          if (btnText) btnText.textContent = 'ADDING...';
+          if (btn) btn.disabled = true;
+
+          const formData = new FormData(form);
+
+          fetch('/cart/add.js', {
+            method: 'POST',
+            body: formData
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (btnText) btnText.textContent = 'ADDED ✓';
+            
+            document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: data } }));
+            
+            fetch('/cart.js')
+              .then(response => response.json())
+              .then(cart => {
+                document.querySelectorAll('.cart-count, [data-cart-count], .header__cart-count, .cart-count-bubble').forEach(el => {
+                  el.textContent = cart.item_count;
+                  el.style.display = 'inline-flex';
+                });
+
+                const cartDrawer = document.querySelector('cart-drawer, #cart-drawer, .cart-drawer');
+                if (cartDrawer && typeof cartDrawer.open === 'function') {
+                  cartDrawer.open();
+                } else if (cartDrawer) {
+                  cartDrawer.classList.add('active', 'is-open');
+                }
+              });
+
+            setTimeout(() => {
+              if (btnText) btnText.textContent = originalText;
+              if (btn) btn.disabled = false;
+            }, 2000);
+          })
+          .catch(err => {
+            console.error('Error adding to cart:', err);
+            if (btnText) btnText.textContent = originalText;
+            if (btn) btn.disabled = false;
+          });
+        });
       })();
     </script>
   </body>
