@@ -324,26 +324,33 @@
         padding-bottom: 16px !important;
       }
 
-      /* Title Typography - Larger & Bold */
+      /* Title Typography - Prominent & Bold */
       .product-card product-title,
       .product-card .product-title,
+      .product-card h2,
       .product-card h3,
-      .product-card a.product-title,
-      .product-card [data-block-type="product-title"] * {
-        font-size: 1.2rem !important;
+      .product-card h4,
+      .product-card a,
+      .product-card .product-title a,
+      .product-card [data-block-type="product-title"],
+      .product-card [data-block-type="product-title"] *,
+      .product-card [class*="title"] {
+        font-size: 1.35rem !important;
         font-weight: 800 !important;
         color: #111111 !important;
-        line-height: 1.35 !important;
+        line-height: 1.3 !important;
         letter-spacing: -0.01em !important;
+        text-decoration: none !important;
       }
 
       /* Price Typography - Larger & Clear */
       .product-card .price,
       .product-card .price-item,
+      .product-card [data-block-type="price"],
       .product-card [data-block-type="price"] * {
-        font-size: 1.05rem !important;
+        font-size: 1.12rem !important;
         font-weight: 700 !important;
-        color: #333333 !important;
+        color: #222222 !important;
       }
 
       /* Bottom Full-Width CTA Button (No excessive top gap) */
