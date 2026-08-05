@@ -425,6 +425,64 @@
         background-color: #D32F2F !important;
         opacity: 0.65 !important;
       }
+
+      /* Single Product Page Title, Price & Description Prominence Boost */
+      .product-information [data-block-type="product-title"] h1,
+      .product-information [data-block-type="product-title"] h2,
+      .product-information [data-block-type="product-title"] .text-block,
+      ._product-details [data-block-type="product-title"] *,
+      .product-information .product__title,
+      .product-information h1.product-title {
+        font-size: 2.2rem !important;
+        font-weight: 800 !important;
+        color: #111111 !important;
+        line-height: 1.25 !important;
+        letter-spacing: -0.02em !important;
+        margin-bottom: 8px !important;
+      }
+
+      .product-information [data-block-type="price"],
+      .product-information [data-block-type="price"] *,
+      ._product-details [data-block-type="price"] *,
+      .product-information .price-item,
+      .product-information .price {
+        font-size: 1.65rem !important;
+        font-weight: 800 !important;
+        color: #D32F2F !important;
+        margin-top: 4px !important;
+      }
+
+      .product-information [data-block-type="product-description"],
+      .product-information [data-block-type="product-description"] *,
+      ._product-details [data-block-type="product-description"] *,
+      .product-information .product__description {
+        font-size: 1.1rem !important;
+        font-weight: 450 !important;
+        line-height: 1.65 !important;
+        color: #333333 !important;
+        margin-top: 14px !important;
+      }
+
+      @media screen and (max-width: 749px) {
+        .product-information [data-block-type="product-title"] h1,
+        .product-information [data-block-type="product-title"] h2,
+        .product-information [data-block-type="product-title"] .text-block,
+        ._product-details [data-block-type="product-title"] * {
+          font-size: 1.65rem !important;
+        }
+
+        .product-information [data-block-type="price"],
+        .product-information [data-block-type="price"] *,
+        ._product-details [data-block-type="price"] * {
+          font-size: 1.4rem !important;
+        }
+
+        .product-information [data-block-type="product-description"],
+        .product-information [data-block-type="product-description"] *,
+        ._product-details [data-block-type="product-description"] * {
+          font-size: 1.05rem !important;
+        }
+      }
     </style>
 
     <script>
