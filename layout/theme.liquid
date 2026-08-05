@@ -165,6 +165,137 @@
         opacity: 1 !important;
         transform: translateY(0) scale(1) !important;
       }
+
+      /* ========================================================
+         PREMIUM RED FOOTER REDESIGN
+         ======================================================== */
+      footer,
+      .footer-content,
+      [data-testid="footer-utilities"],
+      .color-scheme-red {
+        background-color: #d32f2f !important;
+        color: #ffffff !important;
+      }
+
+      footer h1,
+      footer h2,
+      footer h3,
+      footer h4,
+      footer h5,
+      footer .footer-block__heading,
+      footer [class*="heading"] {
+        color: #ffffff !important;
+        font-size: 1.1rem !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.08em !important;
+        margin-bottom: 16px !important;
+      }
+
+      footer a {
+        color: rgba(255, 255, 255, 0.88) !important;
+        text-decoration: none !important;
+        font-size: 0.95rem !important;
+        font-weight: 500 !important;
+        transition: all 0.25s ease !important;
+        display: inline-block !important;
+      }
+
+      footer a:hover {
+        color: #ffffff !important;
+        opacity: 1 !important;
+        transform: translateX(4px) !important;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+      }
+
+      footer ul, footer li {
+        list-style: none !important;
+        padding-left: 0 !important;
+      }
+
+      footer li {
+        margin-bottom: 10px !important;
+      }
+
+      /* Newsletter input field redesign */
+      footer input[type="email"],
+      footer input[type="text"],
+      footer .newsletter-form__field,
+      footer form input {
+        background: rgba(255, 255, 255, 0.18) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.4) !important;
+        border-radius: 40px !important;
+        color: #ffffff !important;
+        padding: 14px 22px !important;
+        font-size: 0.95rem !important;
+        width: 100% !important;
+        backdrop-filter: blur(8px) !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
+      }
+
+      footer input[type="email"]::placeholder,
+      footer form input::placeholder {
+        color: rgba(255, 255, 255, 0.75) !important;
+        font-size: 0.9rem !important;
+      }
+
+      footer input[type="email"]:focus,
+      footer form input:focus {
+        background: rgba(255, 255, 255, 0.28) !important;
+        border-color: #ffffff !important;
+        outline: none !important;
+        box-shadow: 0 0 18px rgba(255, 255, 255, 0.35) !important;
+      }
+
+      /* Newsletter Submit Button */
+      footer button[type="submit"],
+      footer form button,
+      footer .newsletter-form__button {
+        background: #ffffff !important;
+        color: #d32f2f !important;
+        border: none !important;
+        border-radius: 40px !important;
+        padding: 12px 26px !important;
+        font-weight: 800 !important;
+        font-size: 0.9rem !important;
+        cursor: pointer !important;
+        transition: all 0.25s ease !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+      }
+
+      footer button[type="submit"]:hover,
+      footer form button:hover {
+        background: #f7f1ed !important;
+        color: #170b02 !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35) !important;
+      }
+
+      /* Bottom Footer Utilities & Divider line */
+      [data-testid="footer-utilities"],
+      .footer-utilities,
+      .utilities {
+        border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
+        padding-top: 24px !important;
+        padding-bottom: 24px !important;
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-size: 0.85rem !important;
+      }
+
+      [data-testid="footer-utilities"] a,
+      .footer-utilities a {
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-size: 0.85rem !important;
+      }
+
+      [data-testid="footer-utilities"] a:hover,
+      .footer-utilities a:hover {
+        color: #ffffff !important;
+        text-decoration: underline !important;
+      }
     </style>
 
     <script>
