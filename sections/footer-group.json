@@ -543,6 +543,10 @@
         "section_width": "page-width",
         "gap": 24,
         "divider_thickness": 1,
+        "color_scheme": "scheme-red",
+        "padding-block-start": 12,
+        "padding-block-end": 0
+      }
     },
     "welcome_popup_sec": {
       "type": "welcome-popup",
