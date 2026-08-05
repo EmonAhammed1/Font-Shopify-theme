@@ -112,6 +112,14 @@
     "
   >
     {{ children }}
+    {% unless onboarding %}
+      <a
+        href="{{ variant_to_link.url }}"
+        class="custom-product-card__cta-btn"
+      >
+        ADD TO BAG {% if product.price > 0 %}| {{ product.price | money }}{% endif %}
+      </a>
+    {% endunless %}
   </div>
 </product-card>
 {%- if settings.transition_to_main_product -%}
