@@ -309,23 +309,57 @@
     class ImageCarousel{{ ai_gen_id }} extends HTMLElement {
       constructor() {
         super();
-        this.currentSlide = 0;
+        this.realSlideCount = 0;
+        this.slidesToShow = 4;
+        this.cloneCount = 0;
+        this.currentIndex = 0; // index into cloned track (starts at cloneCount)
         this.autoplayInterval = null;
+        this.isTransitioning = false;
       }
 
       connectedCallback() {
         this.track = this.querySelector('.ai-image-carousel-track-{{ ai_gen_id }}');
-        this.slides = this.querySelectorAll('.ai-image-carousel-slide-{{ ai_gen_id }}');
         this.prevButton = this.querySelector('.ai-image-carousel-nav-{{ ai_gen_id }}--prev');
         this.nextButton = this.querySelector('.ai-image-carousel-nav-{{ ai_gen_id }}--next');
         this.dotsContainer = this.querySelector('.ai-image-carousel-dots-{{ ai_gen_id }}');
 
-        if (this.slides.length <= 1) {
+        const originalSlides = Array.from(this.track.querySelectorAll('.ai-image-carousel-slide-{{ ai_gen_id }}'));
+        this.realSlideCount = originalSlides.length;
+
+        if (this.realSlideCount <= 1) {
           if (this.prevButton) this.prevButton.style.display = 'none';
           if (this.nextButton) this.nextButton.style.display = 'none';
           if (this.dotsContainer) this.dotsContainer.style.display = 'none';
           return;
         }
+
+        this.slidesToShow = this.getSlidesToShow();
+        this.cloneCount = this.slidesToShow + 1;
+
+        // Prepend clones from end
+        for (let i = 0; i < this.cloneCount; i++) {
+          const src = originalSlides[this.realSlideCount - 1 - (i % this.realSlideCount)];
+          const clone = src.cloneNode(true);
+          clone.setAttribute('aria-hidden', 'true');
+          clone.classList.add('carousel-clone-{{ ai_gen_id }}');
+          this.track.insertBefore(clone, this.track.firstChild);
+        }
+
+        // Append clones from start
+        for (let i = 0; i < this.cloneCount; i++) {
+          const src = originalSlides[i % this.realSlideCount];
+          const clone = src.cloneNode(true);
+          clone.setAttribute('aria-hidden', 'true');
+          clone.classList.add('carousel-clone-{{ ai_gen_id }}');
+          this.track.appendChild(clone);
+        }
+
+        this.allSlides = Array.from(this.track.querySelectorAll('.ai-image-carousel-slide-{{ ai_gen_id }}'));
+        this.currentIndex = this.cloneCount;
+
+        // Jump to real start without animation
+        this.track.style.transition = 'none';
+        this._applyTransform();
 
         this.setupNavigation();
         this.setupDots();
@@ -333,39 +367,75 @@
         this.setupSwipe();
 
         window.addEventListener('resize', () => {
+          this.slidesToShow = this.getSlidesToShow();
           this.setupDots();
-          this.updateCarousel();
+          this._applyTransform();
         });
-
-        this.updateCarousel();
       }
 
       getSlidesToShow() {
         const isMobile = window.innerWidth < 750;
-        return isMobile 
+        return isMobile
           ? (parseInt('{{ block.settings.slides_to_show_mobile | default: 1 }}', 10) || 1)
           : (parseInt('{{ block.settings.slides_to_show_desktop | default: 4 }}', 10) || 4);
       }
 
-      getMaxSlideIndex() {
-        const slidesToShow = this.getSlidesToShow();
-        return Math.max(0, this.slides.length - slidesToShow);
+      getRealIndex() {
+        return (this.currentIndex - this.cloneCount + this.realSlideCount * 100) % this.realSlideCount;
+      }
+
+      _getGap() {
+        return parseInt('{{ block.settings.slide_gap | default: 16 }}', 10) || 16;
+      }
+
+      _getSlideWidth() {
+        const gap = this._getGap();
+        const containerWidth = this.offsetWidth || this.track.parentElement.offsetWidth;
+        return (containerWidth - (gap * (this.slidesToShow - 1))) / this.slidesToShow;
+      }
+
+      _applyTransform(animated) {
+        const slideWidth = this._getSlideWidth();
+        const gap = this._getGap();
+        const shift = (slideWidth + gap) * this.currentIndex;
+        if (animated) {
+          this.track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+        } else {
+          this.track.style.transition = 'none';
+        }
+        this.track.style.transform = 'translateX(-' + shift + 'px)';
+      }
+
+      _afterTransition() {
+        const total = this.allSlides.length;
+        const maxReal = this.cloneCount + this.realSlideCount;
+
+        // Jumped past end clones → jump silently to real start area
+        if (this.currentIndex >= maxReal) {
+          this.currentIndex = this.cloneCount + (this.currentIndex - maxReal);
+          this._applyTransform(false);
+        }
+        // Jumped before start clones → jump silently to real end area
+        else if (this.currentIndex < this.cloneCount) {
+          this.currentIndex = maxReal - (this.cloneCount - this.currentIndex);
+          this._applyTransform(false);
+        }
+
+        this.isTransitioning = false;
+        this._updateDots();
       }
 
       setupNavigation() {
         if (this.prevButton) {
           this.prevButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.goToPrevSlide();
+            e.preventDefault(); e.stopPropagation();
+            this.goToPrev();
           });
         }
-
         if (this.nextButton) {
           this.nextButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.goToNextSlide();
+            e.preventDefault(); e.stopPropagation();
+            this.goToNext();
           });
         }
       }
@@ -373,96 +443,68 @@
       setupDots() {
         if (!this.dotsContainer) return;
         this.dotsContainer.innerHTML = '';
-
-        const maxIndex = this.getMaxSlideIndex();
-        for (let i = 0; i <= maxIndex; i++) {
+        for (let i = 0; i < this.realSlideCount; i++) {
           const dot = document.createElement('button');
           dot.classList.add('ai-image-carousel-dot-{{ ai_gen_id }}');
           dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
           dot.setAttribute('type', 'button');
           if (i === 0) dot.classList.add('active');
-
           dot.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            this.goToSlide(i);
+            e.preventDefault(); e.stopPropagation();
+            this.goToReal(i);
           });
-
           this.dotsContainer.appendChild(dot);
         }
-
         this.dots = this.querySelectorAll('.ai-image-carousel-dot-{{ ai_gen_id }}');
+      }
+
+      _updateDots() {
+        if (!this.dots) return;
+        const realIdx = this.getRealIndex();
+        this.dots.forEach((dot, i) => dot.classList.toggle('active', i === realIdx));
       }
 
       setupAutoplay() {
         const autoplayEnabled = {{ block.settings.autoplay | default: true }};
         const autoplaySpeed = {{ block.settings.autoplay_speed | default: 5 }} * 1000;
-
-        if (autoplayEnabled && this.slides.length > 1) {
+        if (autoplayEnabled && this.realSlideCount > 1) {
           this.startAutoplayTimer(autoplaySpeed);
-
-          this.addEventListener('mouseenter', () => {
-            if (this.autoplayInterval) clearInterval(this.autoplayInterval);
-          });
-
-          this.addEventListener('mouseleave', () => {
-            this.startAutoplayTimer(autoplaySpeed);
-          });
+          this.addEventListener('mouseenter', () => { if (this.autoplayInterval) clearInterval(this.autoplayInterval); });
+          this.addEventListener('mouseleave', () => { this.startAutoplayTimer(autoplaySpeed); });
         }
       }
 
       startAutoplayTimer(speedMs) {
         if (this.autoplayInterval) clearInterval(this.autoplayInterval);
-        this.autoplayInterval = setInterval(() => {
-          this.goToNextSlide();
-        }, speedMs);
+        this.autoplayInterval = setInterval(() => { this.goToNext(); }, speedMs);
       }
 
-      goToSlide(index) {
-        const maxIndex = this.getMaxSlideIndex();
-        this.currentSlide = Math.min(Math.max(0, index), maxIndex);
-        this.updateCarousel();
+      goToNext() {
+        if (this.isTransitioning) return;
+        this.isTransitioning = true;
+        this.currentIndex++;
+        this._applyTransform(true);
+        this.track.addEventListener('transitionend', () => { this._afterTransition(); }, { once: true });
+        this._updateDots();
       }
 
-      goToPrevSlide() {
-        const maxIndex = this.getMaxSlideIndex();
-        this.currentSlide = this.currentSlide <= 0 ? maxIndex : this.currentSlide - 1;
-        this.updateCarousel();
+      goToPrev() {
+        if (this.isTransitioning) return;
+        this.isTransitioning = true;
+        this.currentIndex--;
+        this._applyTransform(true);
+        this.track.addEventListener('transitionend', () => { this._afterTransition(); }, { once: true });
+        this._updateDots();
       }
 
-      goToNextSlide() {
-        const maxIndex = this.getMaxSlideIndex();
-        this.currentSlide = this.currentSlide >= maxIndex ? 0 : this.currentSlide + 1;
-        this.updateCarousel();
-      }
-
-      updateCarousel() {
-        if (!this.track || !this.slides.length) return;
-        const slidesToShow = this.getSlidesToShow();
-        const gap = parseInt('{{ block.settings.slide_gap | default: 16 }}', 10) || 16;
-        const maxIndex = Math.max(0, this.slides.length - slidesToShow);
-
-        if (this.currentSlide > maxIndex) {
-          this.currentSlide = maxIndex;
-        }
-
-        const containerWidth = this.offsetWidth || this.track.parentElement.offsetWidth;
-        const slideWidth = (containerWidth - (gap * (slidesToShow - 1))) / slidesToShow;
-        const shiftAmount = (slideWidth + gap) * this.currentSlide;
-
-        this.track.style.transform = 'translateX(-' + shiftAmount + 'px)';
-
-        if (this.dots) {
-          this.dots.forEach((dot, index) => {
-            dot.classList.toggle('active', index === this.currentSlide);
-          });
-        }
+      goToReal(realIdx) {
+        this.currentIndex = this.cloneCount + realIdx;
+        this._applyTransform(true);
+        this._updateDots();
       }
 
       setupSwipe() {
         let startX = 0;
-        let startY = 0;
-        let isDragging = false;
         let dragOffsetX = 0;
         let hasDragged = false;
         const SWIPE_THRESHOLD = 50;
@@ -542,27 +584,18 @@
 
         const onTouchMove = (e) => {
           const dx = e.touches[0].clientX - touchStartX;
-          const dy = e.touches[0].clientY - (touchStartX - touchStartX); // just dy=0 approx
           touchDragX = dx;
           if (Math.abs(dx) > CLICK_BLOCK_THRESHOLD) touchHasDragged = true;
           if (e.cancelable) e.preventDefault();
-          const slidesToShow = this.getSlidesToShow();
-          const gap = parseInt('{{ block.settings.slide_gap | default: 16 }}', 10) || 16;
-          const containerWidth = this.offsetWidth;
-          const slideWidth = (containerWidth - (gap * (slidesToShow - 1))) / slidesToShow;
-          const baseShift = (slideWidth + gap) * this.currentSlide;
-          this.track.style.transform = 'translateX(' + (-baseShift + dx) + 'px)';
+          const shift = this._getSlideWidth() + this._getGap();
+          const base = shift * this.currentIndex;
+          this.track.style.transform = 'translateX(' + (-base + dx) + 'px)';
         };
 
-        const onTouchEnd = (e) => {
-          this.track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
-          if (touchDragX < -SWIPE_THRESHOLD) {
-            this.goToNextSlide();
-          } else if (touchDragX > SWIPE_THRESHOLD) {
-            this.goToPrevSlide();
-          } else {
-            this.updateCarousel();
-          }
+        const onTouchEnd = () => {
+          if (touchDragX < -SWIPE_THRESHOLD) this.goToNext();
+          else if (touchDragX > SWIPE_THRESHOLD) this.goToPrev();
+          else this._applyTransform(true);
           const autoplayEnabled = {{ block.settings.autoplay | default: true }};
           const autoplaySpeed = {{ block.settings.autoplay_speed | default: 5 }} * 1000;
           if (autoplayEnabled) this.startAutoplayTimer(autoplaySpeed);
