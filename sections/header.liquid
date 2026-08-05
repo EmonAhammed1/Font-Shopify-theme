@@ -672,6 +672,21 @@
     padding-inline: calc(var(--gap-xl) / 2);
   }
 
+  /* Desktop Header Navigation Link Typography Fix */
+  @media screen and (min-width: 750px) {
+    .menu-list__link,
+    .menu-list__link-title,
+    .menu-list__item,
+    header-menu a,
+    .header-section a.menu-list__link,
+    .header .menu-list__link-title {
+      font-size: 1.15rem !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.02em !important;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    }
+  }
+
   /* Set header paddings based on height setting */
   .header {
     --header-padding: var(--padding-sm);
