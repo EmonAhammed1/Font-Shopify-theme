@@ -540,35 +540,35 @@
     function setupTypewriter() {
       const heroContent = document.querySelectorAll('.hero__content-wrapper');
       heroContent.forEach((wrapper) => {
-        // Target Jumbo text headline (e.g. BOULDERWEAR) for letter-by-letter typing animation
-        const jumboLines = wrapper.querySelectorAll('.jumbo-text-line, jumbo-text');
-        jumboLines.forEach((el) => {
-          if (el.dataset.typewriterDone) return;
-          const originalText = el.textContent.trim();
-          if (!originalText) return;
-          el.dataset.typewriterDone = 'true';
-          el.innerHTML = '';
+        // Target Jumbo text lines (e.g. BOULDERWEAR)
+        const jumboLines = wrapper.querySelectorAll('.jumbo-text-line');
+        jumboLines.forEach((line) => {
+          if (line.dataset.typewriterDone) return;
+          const text = line.textContent.trim();
+          if (!text) return;
+          line.dataset.typewriterDone = 'true';
+          
+          const frag = document.createDocumentFragment();
+          Array.from(text).forEach((char, idx) => {
+            const charSpan = document.createElement('span');
+            charSpan.className = 'typewriter-char';
+            charSpan.style.setProperty('--char-idx', idx);
+            charSpan.textContent = char;
+            frag.appendChild(charSpan);
+          });
+
           const cursor = document.createElement('span');
           cursor.className = 'typewriter-cursor';
           cursor.textContent = '|';
-          el.appendChild(cursor);
+          frag.appendChild(cursor);
 
-          let charIdx = 0;
-          const typeChar = () => {
-            if (charIdx < originalText.length) {
-              const charSpan = document.createElement('span');
-              charSpan.className = 'typewriter-char';
-              charSpan.textContent = originalText[charIdx];
-              el.insertBefore(charSpan, cursor);
-              charIdx++;
-              setTimeout(typeChar, 85);
-            } else {
-              setTimeout(() => {
-                cursor.style.opacity = '0';
-              }, 2500);
-            }
-          };
-          setTimeout(typeChar, 350);
+          line.innerHTML = '';
+          line.appendChild(frag);
+
+          // Hide cursor after typing finishes
+          setTimeout(() => {
+            cursor.style.opacity = '0';
+          }, 3500);
         });
 
         // Target description paragraph text for word-by-word typing animation
@@ -595,26 +595,41 @@
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', setupTypewriter);
     } else {
-      setupTypewriter();
+      setTimeout(setupTypewriter, 100);
     }
   })();
 </script>
 
 {% stylesheet %}
-  /* Typewriter Animation Styles */
-  .typewriter-char {
-    display: inline;
-    animation: charAppear 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  /* Safety font clamping for jumbo text to prevent overflow */
+  jumbo-text, .jumbo-text, .hero .jumbo-text-line {
+    font-size: clamp(2rem, 7vw, 5rem) !important;
+    max-width: 100% !important;
+    overflow: hidden;
+    white-space: normal !important;
+    word-break: break-word;
   }
 
-  @keyframes charAppear {
+  /* Typewriter Animation Styles */
+  .typewriter-char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(12px) scale(0.92);
+    filter: blur(4px);
+    animation: typeRevealChar 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(0.2s + (var(--char-idx) * 0.08s));
+  }
+
+  @keyframes typeRevealChar {
     0% {
       opacity: 0;
-      transform: translateY(6px);
+      transform: translateY(12px) scale(0.92);
+      filter: blur(4px);
     }
     100% {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
+      filter: blur(0);
     }
   }
 
@@ -622,7 +637,9 @@
     display: inline-block;
     color: #e63946;
     font-weight: 300;
-    margin-left: 3px;
+    margin-left: 2px;
+    opacity: 1;
+    transition: opacity 0.5s ease;
     animation: blinkCursor 0.65s infinite alternate;
   }
 
@@ -637,7 +654,7 @@
     transform: translateY(12px) scale(0.96);
     filter: blur(4px);
     animation: wordTypeReveal 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: calc(1.25s + (var(--word-index) * 0.08s));
+    animation-delay: calc(1.2s + (var(--word-index) * 0.08s));
   }
 
   @keyframes wordTypeReveal {
