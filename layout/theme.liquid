@@ -121,13 +121,14 @@
         --line-height: 1.55 !important;
       }
 
-      /* Word animation styles - hidden until scroll triggered */
+      /* Word animation styles - flow side-by-side naturally */
       .font-word-span {
         opacity: 0;
         filter: blur(4px);
-        transform: translateY(12px);
+        transform: translateY(10px);
         display: inline-block;
-        transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+        margin-right: 0.32em;
+        transition: opacity 0.35s ease, filter 0.35s ease, transform 0.35s ease;
         will-change: opacity, filter, transform;
       }
 
@@ -169,7 +170,7 @@
           // Rebuild inner HTML with wrapped word spans
           textEl.innerHTML = words.map((word) => {
             return `<span class="font-word-span">${word}</span>`;
-          }).join(' ');
+          }).join('');
 
           // Set up observer for scroll entry
           let hasAnimated = false;
