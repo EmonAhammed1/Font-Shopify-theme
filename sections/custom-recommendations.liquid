@@ -1,0 +1,234 @@
+<div class="custom-recommendations-wrapper color-scheme-1" id="custom-recommendations-{{ section.id }}">
+  <div class="page-width">
+    {% if section.settings.title != blank %}
+      <h2 class="custom-recommendations__heading">{{ section.settings.title }}</h2>
+    {% endif %}
+
+    <div
+      class="custom-recommendations__grid"
+      id="custom-recommendations-grid-{{ section.id }}"
+      data-url="{{ routes.product_recommendations_url }}?product_id={{ product.id }}&limit=4&intent=related"
+    >
+      {% if recommendations.performed and recommendations.products_count > 0 %}
+        {% for recommendation in recommendations.products %}
+          <div class="custom-product-card">
+            <a href="{{ recommendation.url }}" class="custom-product-card__link">
+              <div class="custom-product-card__image-wrapper">
+                {% if recommendation.featured_media %}
+                  <img
+                    src="{{ recommendation.featured_media | image_url: width: 600 }}"
+                    alt="{{ recommendation.featured_media.alt | escape }}"
+                    loading="lazy"
+                    width="600"
+                    height="750"
+                    class="custom-product-card__image"
+                  >
+                {% else %}
+                  {{ 'product-1' | placeholder_svg_tag: 'custom-product-card__placeholder' }}
+                {% endif %}
+              </div>
+              <div class="custom-product-card__info">
+                <h3 class="custom-product-card__title">{{ recommendation.title }}</h3>
+                <div class="custom-product-card__price">
+                  <span>{{ recommendation.price | money }}</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      {% else %}
+        {% comment %} Fallback catalog products if recommendations API returns empty {% endcomment %}
+        {% assign fallback_products = collections.all.products | reject: 'id', product.id %}
+        {% for fallback in fallback_products limit: 4 %}
+          <div class="custom-product-card">
+            <a href="{{ fallback.url }}" class="custom-product-card__link">
+              <div class="custom-product-card__image-wrapper">
+                {% if fallback.featured_media %}
+                  <img
+                    src="{{ fallback.featured_media | image_url: width: 600 }}"
+                    alt="{{ fallback.featured_media.alt | escape }}"
+                    loading="lazy"
+                    width="600"
+                    height="750"
+                    class="custom-product-card__image"
+                  >
+                {% else %}
+                  {{ 'product-1' | placeholder_svg_tag: 'custom-product-card__placeholder' }}
+                {% endif %}
+              </div>
+              <div class="custom-product-card__info">
+                <h3 class="custom-product-card__title">{{ fallback.title }}</h3>
+                <div class="custom-product-card__price">
+                  <span>{{ fallback.price | money }}</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .custom-recommendations-wrapper {
+    padding-top: 48px;
+    padding-bottom: 48px;
+    width: 100%;
+    background: #ffffff;
+  }
+
+  .custom-recommendations__heading {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: #111111;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .custom-recommendations__grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 20px !important;
+    width: 100% !important;
+  }
+
+  .custom-product-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .custom-product-card:hover {
+    transform: translateY(-4px);
+  }
+
+  .custom-product-card__link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .custom-product-card__image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    background: #f4f4f4;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  .custom-product-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+  }
+
+  .custom-product-card:hover .custom-product-card__image {
+    transform: scale(1.05);
+  }
+
+  .custom-product-card__placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #e9e9e9;
+  }
+
+  .custom-product-card__info {
+    padding: 12px 4px 4px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .custom-product-card__title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #111111;
+    margin: 0;
+    line-height: 1.35;
+  }
+
+  .custom-product-card__price {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #d32f2f;
+  }
+
+  @media screen and (max-width: 749px) {
+    .custom-recommendations-wrapper {
+      padding-top: 32px;
+      padding-bottom: 32px;
+    }
+
+    .custom-recommendations__heading {
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+    }
+
+    .custom-recommendations__grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 12px !important;
+    }
+
+    .custom-product-card__title {
+      font-size: 0.92rem;
+    }
+
+    .custom-product-card__price {
+      font-size: 0.9rem;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    const grid = document.getElementById('custom-recommendations-grid-{{ section.id }}');
+    if (!grid) return;
+    const requestUrl = grid.dataset.url;
+    if (!requestUrl) return;
+
+    fetch(requestUrl)
+      .then((response) => response.text())
+      .then((html) => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const recommendations = doc.querySelectorAll('#custom-recommendations-grid-{{ section.id }} .custom-product-card');
+        if (recommendations && recommendations.length > 0) {
+          grid.innerHTML = '';
+          recommendations.forEach((card) => grid.appendChild(card));
+        }
+      })
+      .catch((e) => console.log('Recommendations fetch error:', e));
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Custom Recommendations",
+  "tag": "section",
+  "class": "section-custom-recommendations",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Heading",
+      "default": "You may also like"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Recommendations"
+    }
+  ]
+}
+{% endschema %}
