@@ -468,24 +468,14 @@
         const SWIPE_THRESHOLD = 50;
         const CLICK_BLOCK_THRESHOLD = 5;
 
-        const onStart = (e) => {
-          const point = e.touches ? e.touches[0] : e;
-          startX = point.clientX;
-          startY = point.clientY;
-          isDragging = true;
-          dragOffsetX = 0;
-          hasDragged = false;
-          if (this.autoplayInterval) clearInterval(this.autoplayInterval);
-          this.track.style.transition = 'none';
-        };
-
-        const onMove = (e) => {
+        const onMouseMove = (e) => {
           if (!isDragging) return;
-          const point = e.touches ? e.touches[0] : e;
-          const dx = point.clientX - startX;
-          const dy = point.clientY - startY;
-          if (Math.abs(dx) < Math.abs(dy) && e.touches) return;
-          if (e.cancelable) e.preventDefault();
+          // Only proceed if left mouse button is still held
+          if (e.buttons !== 1) {
+            onMouseUp(e);
+            return;
+          }
+          const dx = e.clientX - startX;
           dragOffsetX = dx;
           if (Math.abs(dx) > CLICK_BLOCK_THRESHOLD) hasDragged = true;
           const slidesToShow = this.getSlidesToShow();
@@ -496,10 +486,15 @@
           this.track.style.transform = 'translateX(' + (-baseShift + dx) + 'px)';
         };
 
-        const onEnd = (e) => {
+        const onMouseUp = (e) => {
           if (!isDragging) return;
           isDragging = false;
+          this.track.style.cursor = 'grab';
           this.track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+
+          // Remove temporary window listeners immediately
+          window.removeEventListener('mousemove', onMouseMove);
+          window.removeEventListener('mouseup', onMouseUp);
 
           if (dragOffsetX < -SWIPE_THRESHOLD) {
             this.goToNextSlide();
@@ -514,28 +509,84 @@
           if (autoplayEnabled) this.startAutoplayTimer(autoplaySpeed);
         };
 
-        // Suppress click if user was dragging
+        const onMouseDown = (e) => {
+          // Only left click
+          if (e.button !== 0) return;
+          e.preventDefault();
+          startX = e.clientX;
+          startY = e.clientY;
+          isDragging = true;
+          dragOffsetX = 0;
+          hasDragged = false;
+          this.track.style.cursor = 'grabbing';
+          this.track.style.transition = 'none';
+          if (this.autoplayInterval) clearInterval(this.autoplayInterval);
+
+          // Add listeners only for the duration of this drag
+          window.addEventListener('mousemove', onMouseMove);
+          window.addEventListener('mouseup', onMouseUp);
+        };
+
+        // Touch swipe
+        let touchStartX = 0;
+        let touchDragX = 0;
+        let touchHasDragged = false;
+
+        const onTouchStart = (e) => {
+          touchStartX = e.touches[0].clientX;
+          touchDragX = 0;
+          touchHasDragged = false;
+          if (this.autoplayInterval) clearInterval(this.autoplayInterval);
+          this.track.style.transition = 'none';
+        };
+
+        const onTouchMove = (e) => {
+          const dx = e.touches[0].clientX - touchStartX;
+          const dy = e.touches[0].clientY - (touchStartX - touchStartX); // just dy=0 approx
+          touchDragX = dx;
+          if (Math.abs(dx) > CLICK_BLOCK_THRESHOLD) touchHasDragged = true;
+          if (e.cancelable) e.preventDefault();
+          const slidesToShow = this.getSlidesToShow();
+          const gap = parseInt('{{ block.settings.slide_gap | default: 16 }}', 10) || 16;
+          const containerWidth = this.offsetWidth;
+          const slideWidth = (containerWidth - (gap * (slidesToShow - 1))) / slidesToShow;
+          const baseShift = (slideWidth + gap) * this.currentSlide;
+          this.track.style.transform = 'translateX(' + (-baseShift + dx) + 'px)';
+        };
+
+        const onTouchEnd = (e) => {
+          this.track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+          if (touchDragX < -SWIPE_THRESHOLD) {
+            this.goToNextSlide();
+          } else if (touchDragX > SWIPE_THRESHOLD) {
+            this.goToPrevSlide();
+          } else {
+            this.updateCarousel();
+          }
+          const autoplayEnabled = {{ block.settings.autoplay | default: true }};
+          const autoplaySpeed = {{ block.settings.autoplay_speed | default: 5 }} * 1000;
+          if (autoplayEnabled) this.startAutoplayTimer(autoplaySpeed);
+        };
+
+        // Suppress click navigation if user dragged
         this.track.addEventListener('click', (e) => {
-          if (hasDragged) {
+          if (hasDragged || touchHasDragged) {
             e.preventDefault();
             e.stopPropagation();
             hasDragged = false;
+            touchHasDragged = false;
           }
         }, true);
 
-        // Touch events
-        this.track.addEventListener('touchstart', onStart, { passive: true });
-        this.track.addEventListener('touchmove', onMove, { passive: false });
-        this.track.addEventListener('touchend', onEnd);
-
-        // Mouse drag events
-        this.track.addEventListener('mousedown', onStart);
-        window.addEventListener('mousemove', onMove);
-        window.addEventListener('mouseup', onEnd);
+        // Bind mouse drag — listeners added dynamically per drag session
         this.track.style.userSelect = 'none';
         this.track.style.cursor = 'grab';
-        this.track.addEventListener('mousedown', () => { this.track.style.cursor = 'grabbing'; });
-        window.addEventListener('mouseup', () => { this.track.style.cursor = 'grab'; });
+        this.track.addEventListener('mousedown', onMouseDown);
+
+        // Bind touch swipe
+        this.track.addEventListener('touchstart', onTouchStart, { passive: true });
+        this.track.addEventListener('touchmove', onTouchMove, { passive: false });
+        this.track.addEventListener('touchend', onTouchEnd);
       }
 
       disconnectedCallback() {
