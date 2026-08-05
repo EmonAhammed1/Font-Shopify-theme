@@ -584,11 +584,36 @@
   .header-actions__action .svg-wrapper {
     height: var(--button-size);
     width: var(--button-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .header-actions__action svg {
-    width: var(--icon-size-md);
-    height: var(--icon-size-md);
+  /* Right Side Header Icons (Search, Account, Cart) Bolder & Larger */
+  header-actions svg,
+  .header-actions__action svg,
+  .account-popover svg,
+  .header__icon svg,
+  header-actions .svg-wrapper svg {
+    width: 26px !important;
+    height: 26px !important;
+    stroke-width: 2.3px !important;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+    transition: transform 0.25s ease, filter 0.25s ease;
+  }
+
+  header-actions .button,
+  header-actions button,
+  header-actions a,
+  header-actions .header-actions__action {
+    transition: transform 0.25s ease;
+  }
+
+  header-actions .button:hover,
+  header-actions button:hover,
+  header-actions a:hover,
+  header-actions .header-actions__action:hover {
+    transform: scale(1.15) translateY(-1px);
   }
 
   .header-actions__cart-icon {
