@@ -515,6 +515,35 @@
           --font-size: 0.88rem !important;
         }
       }
+
+      /* Product Recommendations Grid Layout (4 columns side-by-side on Desktop, 2 columns per row on Mobile) */
+      .product-recommendations .resource-list--grid,
+      .product-recommendations .resource-list,
+      .section-resource-list .resource-list--grid,
+      [data-testid="product-recommendations-section"] .resource-list--grid,
+      [data-testid="product-recommendations-section"] .resource-list {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 20px !important;
+        width: 100% !important;
+      }
+
+      .product-recommendations .resource-list__item,
+      .section-resource-list .resource-list__item {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+
+      @media screen and (max-width: 749px) {
+        .product-recommendations .resource-list--grid,
+        .product-recommendations .resource-list,
+        .section-resource-list .resource-list--grid,
+        [data-testid="product-recommendations-section"] .resource-list--grid,
+        [data-testid="product-recommendations-section"] .resource-list {
+          grid-template-columns: repeat(2, 1fr) !important;
+          gap: 12px !important;
+        }
+      }
     </style>
 
     <script>
