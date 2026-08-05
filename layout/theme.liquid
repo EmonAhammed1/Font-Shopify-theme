@@ -365,8 +365,12 @@
         color: #444444 !important;
       }
 
-      /* Bottom Full-Width CTA Button (No excessive top gap) */
-      .custom-product-card__cta-btn {
+      /* Bottom Full-Width CTA Button - Guaranteed White Text */
+      button.custom-product-card__cta-btn,
+      a.custom-product-card__cta-btn,
+      .custom-product-card__cta-btn,
+      .custom-product-card__view-details-btn,
+      .custom-product-card__add-to-cart-btn {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -384,9 +388,24 @@
         transition: background-color 0.25s ease !important;
       }
 
-      .custom-product-card__cta-btn:hover {
+      button.custom-product-card__cta-btn *,
+      a.custom-product-card__cta-btn *,
+      a.custom-product-card__cta-btn:link,
+      a.custom-product-card__cta-btn:visited,
+      .custom-product-card__cta-btn .btn-text {
+        color: #FFFFFF !important;
+        text-decoration: none !important;
+      }
+
+      .custom-product-card__cta-btn:hover,
+      .custom-product-card__cta-btn:hover * {
         background-color: #B71C1C !important;
         color: #FFFFFF !important;
+      }
+
+      .custom-product-card__cta-btn--disabled {
+        background-color: #D32F2F !important;
+        opacity: 0.65 !important;
       }
     </style>
 
