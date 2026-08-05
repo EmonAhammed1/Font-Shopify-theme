@@ -111,5 +111,15 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
+
+    <style>
+      /* Spacious line spacing for Fontainebleau hero text section */
+      [id*="hero_pjNAy4"] h4,
+      [id*="hero_pjNAy4"] .text-block,
+      [id*="hero_pjNAy4"] .custom-typography {
+        line-height: 1.95 !important;
+        --line-height: 1.95 !important;
+      }
+    </style>
   </body>
 </html>
