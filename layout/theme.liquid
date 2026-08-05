@@ -113,7 +113,7 @@
     {% endif %}
 
     <style>
-      /* Fontainebleau hero text section line spacing & word writing animation */
+      /* Fontainebleau hero text section line spacing & reveal animation */
       [id*="hero_pjNAy4"] h4,
       [id*="hero_pjNAy4"] .text-block,
       [id*="hero_pjNAy4"] .custom-typography {
@@ -121,93 +121,61 @@
         --line-height: 1.55 !important;
       }
 
-      /* Word animation styles - flow side-by-side naturally */
-      .font-word-span {
+      /* Hidden initially before scrolling to this section */
+      [id*="hero_pjNAy4"] .text-block,
+      [id*="hero_pjNAy4"] [data-block-type="text"] {
         opacity: 0;
-        filter: blur(4px);
-        transform: translateY(10px);
-        display: inline-block;
-        margin-right: 0.32em;
-        transition: opacity 0.35s ease, filter 0.35s ease, transform 0.35s ease;
-        will-change: opacity, filter, transform;
-      }
-
-      .font-word-span.word-written {
-        opacity: 1 !important;
-        filter: blur(0) !important;
-        transform: translateY(0) !important;
-      }
-
-      /* Logo and button hidden initially until text finishes writing */
-      [id*="hero_pjNAy4"] [data-block-type="image"],
-      [id*="hero_pjNAy4"] .button {
-        opacity: 0;
-        transform: scale(0.92) translateY(20px);
-        transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(40px);
+        transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
         will-change: opacity, transform;
       }
 
-      [id*="hero_pjNAy4"].logo-revealed [data-block-type="image"],
-      [id*="hero_pjNAy4"].logo-revealed .button {
+      [id*="hero_pjNAy4"] [data-block-type="image"],
+      [id*="hero_pjNAy4"] .button {
+        opacity: 0;
+        transform: translateY(30px) scale(0.94);
+        transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.25s, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
+        will-change: opacity, transform;
+      }
+
+      /* Revealed active state when scrolled into view */
+      [id*="hero_pjNAy4"].section-revealed .text-block,
+      [id*="hero_pjNAy4"].section-revealed [data-block-type="text"] {
         opacity: 1 !important;
-        transform: scale(1) translateY(0) !important;
+        transform: translateY(0) !important;
+      }
+
+      [id*="hero_pjNAy4"].section-revealed [data-block-type="image"],
+      [id*="hero_pjNAy4"].section-revealed .button {
+        opacity: 1 !important;
+        transform: translateY(0) scale(1) !important;
       }
     </style>
 
     <script>
       (function () {
-        function prepareTextWriting() {
+        function initScrollReveal() {
           const section = document.querySelector('[id*="hero_pjNAy4"]');
           if (!section) return;
 
-          const textEl = section.querySelector('h4, h3, h2, h1, .text-block');
-          if (!textEl || textEl.dataset.typewriterReady) return;
-
-          textEl.dataset.typewriterReady = 'true';
-          const fullText = textEl.textContent.trim();
-          const words = fullText.split(/\s+/);
-
-          // Rebuild inner HTML with wrapped word spans
-          textEl.innerHTML = words.map((word) => {
-            return `<span class="font-word-span">${word}</span>`;
-          }).join('');
-
-          // Set up observer for scroll entry
-          let hasAnimated = false;
           const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-              if (entry.isIntersecting && !hasAnimated) {
-                hasAnimated = true;
-                animateWords(textEl, section);
+              if (entry.isIntersecting) {
+                section.classList.add('section-revealed');
                 observer.unobserve(section);
               }
             });
           }, {
-            threshold: 0.25
+            threshold: 0.2
           });
 
           observer.observe(section);
         }
 
-        function animateWords(textEl, section) {
-          const wordSpans = textEl.querySelectorAll('.font-word-span');
-          wordSpans.forEach((span, index) => {
-            setTimeout(() => {
-              span.classList.add('word-written');
-            }, index * 45); // 45ms per word for live writing animation
-          });
-
-          // Reveal logo & button after text writing completes
-          const totalDuration = wordSpans.length * 45 + 150;
-          setTimeout(() => {
-            section.classList.add('logo-revealed');
-          }, totalDuration);
-        }
-
         if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', prepareTextWriting);
+          document.addEventListener('DOMContentLoaded', initScrollReveal);
         } else {
-          prepareTextWriting();
+          initScrollReveal();
         }
       })();
     </script>
