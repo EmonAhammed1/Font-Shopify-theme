@@ -113,7 +113,7 @@
     {% endif %}
 
     <style>
-      /* Fontainebleau hero text section line spacing & reveal animation */
+      /* Fontainebleau hero text section line spacing & word writing animation */
       [id*="hero_pjNAy4"] h4,
       [id*="hero_pjNAy4"] .text-block,
       [id*="hero_pjNAy4"] .custom-typography {
@@ -121,57 +121,92 @@
         --line-height: 1.55 !important;
       }
 
-      /* Scroll reveal initial state */
-      [id*="hero_pjNAy4"] .text-block,
+      /* Word animation styles - hidden until scroll triggered */
+      .font-word-span {
+        opacity: 0;
+        filter: blur(4px);
+        transform: translateY(12px);
+        display: inline-block;
+        transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+        will-change: opacity, filter, transform;
+      }
+
+      .font-word-span.word-written {
+        opacity: 1 !important;
+        filter: blur(0) !important;
+        transform: translateY(0) !important;
+      }
+
+      /* Logo and button hidden initially until text finishes writing */
       [id*="hero_pjNAy4"] [data-block-type="image"],
       [id*="hero_pjNAy4"] .button {
         opacity: 0;
-        transform: translateY(35px);
-        transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: scale(0.92) translateY(20px);
+        transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         will-change: opacity, transform;
       }
 
-      /* Staggered delay for child elements */
-      [id*="hero_pjNAy4"] [data-block-type="image"] {
-        transition-delay: 0.2s;
-      }
-      [id*="hero_pjNAy4"] .button {
-        transition-delay: 0.35s;
-      }
-
-      /* Revealed active state when scrolled into view */
-      [id*="hero_pjNAy4"].section-revealed .text-block,
-      [id*="hero_pjNAy4"].section-revealed [data-block-type="image"],
-      [id*="hero_pjNAy4"].section-revealed .button {
+      [id*="hero_pjNAy4"].logo-revealed [data-block-type="image"],
+      [id*="hero_pjNAy4"].logo-revealed .button {
         opacity: 1 !important;
-        transform: translateY(0) !important;
+        transform: scale(1) translateY(0) !important;
       }
     </style>
 
     <script>
       (function () {
-        function initScrollReveal() {
+        function prepareTextWriting() {
           const section = document.querySelector('[id*="hero_pjNAy4"]');
           if (!section) return;
 
+          const textEl = section.querySelector('h4, h3, h2, h1, .text-block');
+          if (!textEl || textEl.dataset.typewriterReady) return;
+
+          textEl.dataset.typewriterReady = 'true';
+          const fullText = textEl.textContent.trim();
+          const words = fullText.split(/\s+/);
+
+          // Rebuild inner HTML with wrapped word spans
+          textEl.innerHTML = words.map((word) => {
+            return `<span class="font-word-span">${word}</span>`;
+          }).join(' ');
+
+          // Set up observer for scroll entry
+          let hasAnimated = false;
           const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                section.classList.add('section-revealed');
+              if (entry.isIntersecting && !hasAnimated) {
+                hasAnimated = true;
+                animateWords(textEl, section);
                 observer.unobserve(section);
               }
             });
           }, {
-            threshold: 0.2
+            threshold: 0.25
           });
 
           observer.observe(section);
         }
 
+        function animateWords(textEl, section) {
+          const wordSpans = textEl.querySelectorAll('.font-word-span');
+          wordSpans.forEach((span, index) => {
+            setTimeout(() => {
+              span.classList.add('word-written');
+            }, index * 45); // 45ms per word for live writing animation
+          });
+
+          // Reveal logo & button after text writing completes
+          const totalDuration = wordSpans.length * 45 + 150;
+          setTimeout(() => {
+            section.classList.add('logo-revealed');
+          }, totalDuration);
+        }
+
         if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', initScrollReveal);
+          document.addEventListener('DOMContentLoaded', prepareTextWriting);
         } else {
-          initScrollReveal();
+          prepareTextWriting();
         }
       })();
     </script>
