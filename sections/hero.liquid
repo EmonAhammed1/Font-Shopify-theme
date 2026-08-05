@@ -508,7 +508,6 @@
     {%- endif -%}
     <div
       class="hero__media-wrapper"
-      style="--hero-media-count: {{ media_count }};--hero-media-count-mobile: {{ media_count_mobile }};{%- if section.settings.image_1 != blank -%} --hero-media-aspect-ratio: {{ section.settings.image_1.aspect_ratio }};{% endif %}"
       data-testid="hero-media-wrapper"
     >
       {% liquid
@@ -516,7 +515,102 @@
           render 'overlay', settings: section.settings
         endif
       %}
-      {{ media }}
+
+      <div 
+        class="hero__media-slider"
+        data-autoplay="{{ section.settings.enable_autoplay }}"
+        data-speed="{{ section.settings.autoplay_speed | default: 5 }}"
+      >
+        {% assign slide_index = 0 %}
+
+        {% comment %} Slide 1 {% endcomment %}
+        {% if section.settings.image_1 != blank and section.settings.media_type_1 == 'image' %}
+          <div class="hero__slide {% if slide_index == 0 %}hero__slide--active{% endif %}" data-slide-index="{{ slide_index }}">
+            {{ section.settings.image_1 | image_url: width: 3840 | image_tag: class: 'hero__image', fetchpriority: fetch_priority }}
+          </div>
+          {% assign slide_index = slide_index | plus: 1 %}
+        {% elsif section.settings.video_1 != blank and section.settings.media_type_1 == 'video' %}
+          <div class="hero__slide {% if slide_index == 0 %}hero__slide--active{% endif %}" data-slide-index="{{ slide_index }}">
+            {{ section.settings.video_1 | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'hero__video' }}
+          </div>
+          {% assign slide_index = slide_index | plus: 1 %}
+        {% endif %}
+
+        {% comment %} Slide 2 {% endcomment %}
+        {% if section.settings.image_2 != blank and section.settings.media_type_2 == 'image' %}
+          <div class="hero__slide {% if slide_index == 0 %}hero__slide--active{% endif %}" data-slide-index="{{ slide_index }}">
+            {{ section.settings.image_2 | image_url: width: 3840 | image_tag: class: 'hero__image', fetchpriority: fetch_priority }}
+          </div>
+          {% assign slide_index = slide_index | plus: 1 %}
+        {% elsif section.settings.video_2 != blank and section.settings.media_type_2 == 'video' %}
+          <div class="hero__slide {% if slide_index == 0 %}hero__slide--active{% endif %}" data-slide-index="{{ slide_index }}">
+            {{ section.settings.video_2 | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'hero__video' }}
+          </div>
+          {% assign slide_index = slide_index | plus: 1 %}
+        {% endif %}
+
+        {% comment %} Slide 3 {% endcomment %}
+        {% if section.settings.image_3 != blank and section.settings.media_type_3 == 'image' %}
+          <div class="hero__slide {% if slide_index == 0 %}hero__slide--active{% endif %}" data-slide-index="{{ slide_index }}">
+            {{ section.settings.image_3 | image_url: width: 3840 | image_tag: class: 'hero__image', fetchpriority: fetch_priority }}
+          </div>
+          {% assign slide_index = slide_index | plus: 1 %}
+        {% elsif section.settings.video_3 != blank and section.settings.media_type_3 == 'video' %}
+          <div class="hero__slide {% if slide_index == 0 %}hero__slide--active{% endif %}" data-slide-index="{{ slide_index }}">
+            {{ section.settings.video_3 | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'hero__video' }}
+          </div>
+          {% assign slide_index = slide_index | plus: 1 %}
+        {% endif %}
+
+        {% comment %} Slide 4 {% endcomment %}
+        {% if section.settings.image_4 != blank and section.settings.media_type_4 == 'image' %}
+          <div class="hero__slide {% if slide_index == 0 %}hero__slide--active{% endif %}" data-slide-index="{{ slide_index }}">
+            {{ section.settings.image_4 | image_url: width: 3840 | image_tag: class: 'hero__image', fetchpriority: fetch_priority }}
+          </div>
+          {% assign slide_index = slide_index | plus: 1 %}
+        {% elsif section.settings.video_4 != blank and section.settings.media_type_4 == 'video' %}
+          <div class="hero__slide {% if slide_index == 0 %}hero__slide--active{% endif %}" data-slide-index="{{ slide_index }}">
+            {{ section.settings.video_4 | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'hero__video' }}
+          </div>
+          {% assign slide_index = slide_index | plus: 1 %}
+        {% endif %}
+
+        {% comment %} Slide 5 {% endcomment %}
+        {% if section.settings.image_5 != blank and section.settings.media_type_5 == 'image' %}
+          <div class="hero__slide {% if slide_index == 0 %}hero__slide--active{% endif %}" data-slide-index="{{ slide_index }}">
+            {{ section.settings.image_5 | image_url: width: 3840 | image_tag: class: 'hero__image', fetchpriority: fetch_priority }}
+          </div>
+          {% assign slide_index = slide_index | plus: 1 %}
+        {% elsif section.settings.video_5 != blank and section.settings.media_type_5 == 'video' %}
+          <div class="hero__slide {% if slide_index == 0 %}hero__slide--active{% endif %}" data-slide-index="{{ slide_index }}">
+            {{ section.settings.video_5 | video_tag: autoplay: true, loop: true, controls: false, muted: true, class: 'hero__video' }}
+          </div>
+          {% assign slide_index = slide_index | plus: 1 %}
+        {% endif %}
+
+        {% comment %} Fallback placeholder if no media is uploaded {% endcomment %}
+        {% if slide_index == 0 %}
+          <div class="hero__slide hero__slide--active" data-slide-index="0">
+            {{ 'hero-apparel-1' | placeholder_svg_tag: 'hero__image' }}
+          </div>
+          {% assign slide_index = 1 %}
+        {% endif %}
+
+        {% comment %} Slide Navigation Dots {% endcomment %}
+        {% if slide_index > 1 %}
+          <div class="hero__slider-dots">
+            {% for i in (1..slide_index) %}
+              {% assign dot_idx = forloop.index0 %}
+              <button 
+                type="button" 
+                class="hero__slider-dot {% if dot_idx == 0 %}hero__slider-dot--active{% endif %}" 
+                data-dot-index="{{ dot_idx }}"
+                aria-label="Slide {{ forloop.index }}"
+              ></button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
     </div>
     <div
       class="
@@ -598,9 +692,144 @@
       setTimeout(setupTypewriter, 100);
     }
   })();
+
+  /* Hero Background Slideshow JS Engine */
+  (function initHeroBackgroundSlider() {
+    function setupSlider() {
+      const slider = document.querySelector('.hero__media-slider');
+      if (!slider) return;
+
+      const slides = slider.querySelectorAll('.hero__slide');
+      if (slides.length <= 1) return;
+
+      const dots = slider.querySelectorAll('.hero__slider-dot');
+      const autoplay = slider.getAttribute('data-autoplay') !== 'false';
+      const speedSeconds = parseFloat(slider.getAttribute('data-speed') || '5');
+      const speedMs = Math.max(2000, speedSeconds * 1000);
+
+      let currentIndex = 0;
+      let intervalTimer = null;
+
+      function goToSlide(index) {
+        currentIndex = (index + slides.length) % slides.length;
+        slides.forEach((slide, i) => {
+          if (i === currentIndex) {
+            slide.classList.add('hero__slide--active');
+            const video = slide.querySelector('video');
+            if (video) {
+              video.currentTime = 0;
+              video.play().catch(() => {});
+            }
+          } else {
+            slide.classList.remove('hero__slide--active');
+          }
+        });
+
+        dots.forEach((dot, i) => {
+          if (i === currentIndex) {
+            dot.classList.add('hero__slider-dot--active');
+          } else {
+            dot.classList.remove('hero__slider-dot--active');
+          }
+        });
+      }
+
+      function startAutoplay() {
+        if (intervalTimer) clearInterval(intervalTimer);
+        if (autoplay) {
+          intervalTimer = setInterval(() => {
+            goToSlide(currentIndex + 1);
+          }, speedMs);
+        }
+      }
+
+      dots.forEach((dot, idx) => {
+        dot.addEventListener('click', (e) => {
+          e.preventDefault();
+          goToSlide(idx);
+          startAutoplay();
+        });
+      });
+
+      goToSlide(0);
+      startAutoplay();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupSlider);
+    } else {
+      setupSlider();
+    }
+  })();
 </script>
 
 {% stylesheet %}
+  /* Hero Background Slideshow & Smooth Fade-In Animation */
+  .hero__media-slider {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .hero__slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 1.5s cubic-bezier(0.25, 1, 0.5, 1), transform 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: scale(1.05);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .hero__slide--active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    z-index: 2;
+  }
+
+  .hero__slide img,
+  .hero__slide video,
+  .hero__slide svg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .hero__slider-dots {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+  }
+
+  .hero__slider-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.35);
+    border: 1.5px solid rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.35s ease;
+    padding: 0;
+  }
+
+  .hero__slider-dot--active {
+    background: #ffffff;
+    width: 28px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.9);
+  }
   /* Large Jumbo Text styling & alignment */
   jumbo-text, .jumbo-text {
     display: flex !important;
@@ -1139,6 +1368,116 @@
       "id": "video_2",
       "label": "t:settings.video",
       "visible_if": "{{ section.settings.media_type_2 == 'video' }}"
+    },
+    {
+      "type": "header",
+      "content": "Background Slideshow & Autoplay Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "Enable Slideshow Autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "unit": "s",
+      "label": "Slide Autoplay Speed Timer (seconds)",
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Media 3 (Background Slide 3)"
+    },
+    {
+      "type": "select",
+      "id": "media_type_3",
+      "label": "Media Type",
+      "options": [
+        {
+          "value": "image",
+          "label": "Image"
+        },
+        {
+          "value": "video",
+          "label": "Video"
+        }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image 3"
+    },
+    {
+      "type": "video",
+      "id": "video_3",
+      "label": "Video 3"
+    },
+    {
+      "type": "header",
+      "content": "Media 4 (Background Slide 4)"
+    },
+    {
+      "type": "select",
+      "id": "media_type_4",
+      "label": "Media Type",
+      "options": [
+        {
+          "value": "image",
+          "label": "Image"
+        },
+        {
+          "value": "video",
+          "label": "Video"
+        }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_4",
+      "label": "Image 4"
+    },
+    {
+      "type": "video",
+      "id": "video_4",
+      "label": "Video 4"
+    },
+    {
+      "type": "header",
+      "content": "Media 5 (Background Slide 5)"
+    },
+    {
+      "type": "select",
+      "id": "media_type_5",
+      "label": "Media Type",
+      "options": [
+        {
+          "value": "image",
+          "label": "Image"
+        },
+        {
+          "value": "video",
+          "label": "Video"
+        }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_5",
+      "label": "Image 5"
+    },
+    {
+      "type": "video",
+      "id": "video_5",
+      "label": "Video 5"
     },
     {
       "type": "header",
