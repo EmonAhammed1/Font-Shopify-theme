@@ -1368,21 +1368,46 @@
     "section_x8mrnx": {
       "type": "section",
       "blocks": {
-        "text_eFMntb": {
+        "text_subtitle": {
           "type": "text",
           "settings": {
-            "text": "<p>Font clothing brings a new concept in active clothing</p><p>BOULDERWEAR</p><p></p><p></p>",
+            "text": "<h4>Font clothing brings a new concept in active clothing</h4>",
             "width": "100%",
-            "max_width": "narrow",
+            "max_width": "normal",
             "alignment": "center",
-            "type_preset": "h2",
+            "type_preset": "h3",
             "font": "var(--font-body--family)",
-            "font_size": "1rem",
+            "font_size": "1.35rem",
             "line_height": "normal",
-            "letter_spacing": "normal",
+            "letter_spacing": "0.03em",
             "case": "none",
             "wrap": "pretty",
-            "color": "",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_headline": {
+          "type": "text",
+          "settings": {
+            "text": "<h2>BOULDERWEAR</h2>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "h1",
+            "font": "var(--font-heading--family)",
+            "font_size": "3.75rem",
+            "line_height": "1.1",
+            "letter_spacing": "0.08em",
+            "case": "uppercase",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
             "background": false,
             "background_color": "#00000026",
             "corner_radius": 0,
@@ -1396,10 +1421,10 @@
         "button_TmU98M": {
           "type": "button",
           "settings": {
-            "label": "Shop now →",
+            "label": "Shop Now →",
             "link": "shopify://collections/all",
             "open_in_new_tab": false,
-            "style_class": "link",
+            "style_class": "button",
             "width": "fit-content",
             "custom_width": 100,
             "width_mobile": "fit-content",
@@ -1409,7 +1434,8 @@
         }
       },
       "block_order": [
-        "text_eFMntb",
+        "text_subtitle",
+        "text_headline",
         "button_TmU98M"
       ],
       "name": "t:names.pull_quote",
@@ -1421,7 +1447,7 @@
         "align_baseline": false,
         "horizontal_alignment_flex_direction_column": "center",
         "vertical_alignment_flex_direction_column": "center",
-        "gap": 72,
+        "gap": 24,
         "section_width": "page-width",
         "section_height": "medium",
         "section_height_custom": 50,
@@ -1437,8 +1463,8 @@
         "overlay_color": "#00000026",
         "overlay_style": "solid",
         "gradient_direction": "to top",
-        "padding-block-start": 64,
-        "padding-block-end": 64
+        "padding-block-start": 80,
+        "padding-block-end": 80
       }
     },
     "hero_Ha3FDU": {

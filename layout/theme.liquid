@@ -111,5 +111,50 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
+
+    <style>
+      /* Premium Red Banner Styling (section_x8mrnx) */
+      [id*="section_x8mrnx"] {
+        background-color: #d32f2f !important;
+        color: #ffffff !important;
+      }
+      [id*="section_x8mrnx"] .section-background,
+      [id*="section_x8mrnx"] .custom-section-background {
+        background-color: #d32f2f !important;
+      }
+      [id*="section_x8mrnx"] h1,
+      [id*="section_x8mrnx"] h2,
+      [id*="section_x8mrnx"] h3,
+      [id*="section_x8mrnx"] h4,
+      [id*="section_x8mrnx"] p,
+      [id*="section_x8mrnx"] span {
+        color: #ffffff !important;
+      }
+      [id*="section_x8mrnx"] a.button,
+      [id*="section_x8mrnx"] .button {
+        background-color: #ffffff !important;
+        color: #d32f2f !important;
+        border: none !important;
+        border-radius: 40px !important;
+        padding: 14px 38px !important;
+        font-size: 0.95rem !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25) !important;
+        transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      [id*="section_x8mrnx"] a.button:hover,
+      [id*="section_x8mrnx"] .button:hover {
+        background-color: #f7f1ed !important;
+        color: #170b02 !important;
+        transform: translateY(-2px) scale(1.03) !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35) !important;
+      }
+    </style>
   </body>
 </html>
