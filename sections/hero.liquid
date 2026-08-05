@@ -602,11 +602,26 @@
 
 {% stylesheet %}
   /* Large Jumbo Text styling & alignment */
-  jumbo-text, .jumbo-text, .hero .jumbo-text-line {
-    font-size: clamp(3rem, 10.5vw, 10.5rem) !important;
+  jumbo-text, .jumbo-text {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
     width: 100% !important;
     max-width: 100% !important;
+    margin-inline: auto !important;
+  }
+
+  .hero .jumbo-text-line,
+  jumbo-text .jumbo-text-line {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     text-align: center !important;
+    width: 100% !important;
+    margin-inline: auto !important;
+    font-size: clamp(3rem, 10.5vw, 10.5rem) !important;
     letter-spacing: -0.01em;
     line-height: 0.95;
     white-space: nowrap !important;
