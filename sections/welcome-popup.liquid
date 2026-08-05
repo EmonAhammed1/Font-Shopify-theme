@@ -1,38 +1,43 @@
-<div class="welcome-popup-overlay" id="WelcomePopup" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="PopupTitle">
-  <div class="welcome-popup-backdrop" id="WelcomePopupBackdrop"></div>
+{%- if section.settings.enable_popup -%}
+<div class="welcome-popup-overlay" id="WelcomePopup-{{ section.id }}" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="PopupTitle-{{ section.id }}">
+  <div class="welcome-popup-backdrop" id="WelcomePopupBackdrop-{{ section.id }}"></div>
   
   <div class="welcome-popup-card">
-    <button type="button" class="welcome-popup-close" id="WelcomePopupClose" aria-label="Close popup">
+    <button type="button" class="welcome-popup-close" id="WelcomePopupClose-{{ section.id }}" aria-label="Close popup">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
 
-    <div class="welcome-popup-badge">
-      <span class="badge-icon">🎁</span>
-      <span>SPECIAL OFFER — GET 10% OFF</span>
-    </div>
+    {% if section.settings.discount_badge != blank %}
+      <div class="welcome-popup-badge">
+        <span class="badge-icon">🎁</span>
+        <span>{{ section.settings.discount_badge }}</span>
+      </div>
+    {% endif %}
 
-    <h2 class="welcome-popup-title" id="PopupTitle">Welcome to FONT Boulderwear</h2>
-    <p class="welcome-popup-subtitle">
-      Join our bouldering community! Subscribe to our newsletter to receive <strong>10% OFF</strong> your order plus exclusive access to new crag releases.
-    </p>
+    <h2 class="welcome-popup-title" id="PopupTitle-{{ section.id }}">{{ section.settings.heading }}</h2>
+    <div class="welcome-popup-subtitle">
+      {{ section.settings.subtitle }}
+    </div>
 
     <!-- Promo Code Display Box -->
-    <div class="welcome-popup-code-box">
-      <div class="code-details">
-        <span class="code-label">PROMO CODE:</span>
-        <span class="code-value" id="WelcomePromoCode">WELCOME10</span>
+    {% if section.settings.promo_code != blank %}
+      <div class="welcome-popup-code-box">
+        <div class="code-details">
+          <span class="code-label">PROMO CODE:</span>
+          <span class="code-value" id="WelcomePromoCode-{{ section.id }}">{{ section.settings.promo_code }}</span>
+        </div>
+        <button type="button" class="code-copy-btn" id="WelcomeCopyBtn-{{ section.id }}">
+          <span id="CopyBtnText-{{ section.id }}">Copy</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
       </div>
-      <button type="button" class="code-copy-btn" id="WelcomeCopyBtn">
-        <span id="CopyBtnText">Copy</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-        </svg>
-      </button>
-    </div>
+    {% endif %}
 
     <!-- Newsletter Subscription Form -->
     {% form 'customer', class: 'welcome-popup-form', id: 'WelcomeNewsletterForm' %}
@@ -40,7 +45,7 @@
       
       {% if form.posted_successfully? %}
         <div class="popup-form-success">
-          🎉 Thank you for subscribing! Use promo code <strong>WELCOME10</strong> at checkout for 10% off!
+          🎉 Thank you for subscribing! Use promo code <strong>{{ section.settings.promo_code }}</strong> at checkout for 10% off!
         </div>
       {% else %}
         {% if form.errors %}
@@ -72,11 +77,20 @@
       {% endif %}
     {% endform %}
 
-    <button type="button" class="welcome-popup-dismiss" id="WelcomePopupDismiss">
+    <!-- Don't Show Again Checkbox Box -->
+    <div class="welcome-popup-never-box">
+      <label class="welcome-popup-checkbox-label">
+        <input type="checkbox" id="WelcomeDontShowCheckbox-{{ section.id }}" class="welcome-popup-checkbox">
+        <span>Don't show this again</span>
+      </label>
+    </div>
+
+    <button type="button" class="welcome-popup-dismiss" id="WelcomePopupDismiss-{{ section.id }}">
       No thanks, I'll pay full price
     </button>
   </div>
 </div>
+{%- endif -%}
 
 <style>
   .welcome-popup-overlay {
@@ -117,7 +131,7 @@
     background: #ffffff;
     width: 100%;
     max-width: 520px;
-    padding: 40px 36px 32px 36px;
+    padding: 40px 36px 30px 36px;
     border-radius: 20px;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
     text-align: center;
@@ -182,7 +196,7 @@
     font-size: 1rem;
     color: #555555;
     line-height: 1.55;
-    margin: 0 0 24px 0;
+    margin: 0 0 22px 0;
   }
 
   .welcome-popup-subtitle strong {
@@ -198,7 +212,7 @@
     border: 2px dashed #d32f2f;
     padding: 12px 16px;
     border-radius: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 22px;
   }
 
   .code-details {
@@ -252,7 +266,7 @@
     flex-direction: column;
     gap: 12px;
     width: 100%;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
   }
 
   .popup-input-group {
@@ -323,6 +337,31 @@
     font-weight: 600;
   }
 
+  /* Don't show again checkbox */
+  .welcome-popup-never-box {
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .welcome-popup-checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    color: #555555;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .welcome-popup-checkbox {
+    width: 17px;
+    height: 17px;
+    accent-color: #d32f2f;
+    cursor: pointer;
+  }
+
   .welcome-popup-dismiss {
     background: transparent;
     border: none;
@@ -365,47 +404,85 @@
 
 <script>
   (function () {
-    const popup = document.getElementById('WelcomePopup');
-    const closeBtn = document.getElementById('WelcomePopupClose');
-    const backdrop = document.getElementById('WelcomePopupBackdrop');
-    const dismissBtn = document.getElementById('WelcomePopupDismiss');
-    const copyBtn = document.getElementById('WelcomeCopyBtn');
-    const copyText = document.getElementById('CopyBtnText');
-    const promoCode = document.getElementById('WelcomePromoCode');
-
+    const sectionId = '{{ section.id }}';
+    const popup = document.getElementById('WelcomePopup-' + sectionId);
     if (!popup) return;
 
+    const closeBtn = document.getElementById('WelcomePopupClose-' + sectionId);
+    const backdrop = document.getElementById('WelcomePopupBackdrop-' + sectionId);
+    const dismissBtn = document.getElementById('WelcomePopupDismiss-' + sectionId);
+    const dontShowCheckbox = document.getElementById('WelcomeDontShowCheckbox-' + sectionId);
+    const copyBtn = document.getElementById('WelcomeCopyBtn-' + sectionId);
+    const copyText = document.getElementById('CopyBtnText-' + sectionId);
+    const promoCode = document.getElementById('WelcomePromoCode-' + sectionId);
+    const form = document.getElementById('WelcomeNewsletterForm');
+
+    const initialDelay = ({{ section.settings.initial_delay | default: 4 }}) * 1000;
+    const recurringDelay = ({{ section.settings.recurring_delay | default: 40 }}) * 1000;
+
+    let recurringIntervalId = null;
+
+    function isNeverShow() {
+      return localStorage.getItem('welcome_popup_never_show') === 'true';
+    }
+
+    function setNeverShow() {
+      localStorage.setItem('welcome_popup_never_show', 'true');
+    }
+
     function openPopup() {
+      if (isNeverShow()) return;
       popup.classList.add('is-visible');
       popup.setAttribute('aria-hidden', 'false');
       document.body.style.overflow = 'hidden';
+
+      if (recurringIntervalId) {
+        clearInterval(recurringIntervalId);
+        recurringIntervalId = null;
+      }
     }
 
     function closePopup() {
       popup.classList.remove('is-visible');
       popup.setAttribute('aria-hidden', 'true');
       document.body.style.overflow = '';
-      sessionStorage.setItem('welcome_popup_closed', 'true');
+
+      if (dontShowCheckbox && dontShowCheckbox.checked) {
+        setNeverShow();
+      }
+
+      if (!isNeverShow()) {
+        if (recurringIntervalId) clearInterval(recurringIntervalId);
+        recurringIntervalId = setInterval(function () {
+          if (!isNeverShow()) {
+            openPopup();
+          } else {
+            clearInterval(recurringIntervalId);
+          }
+        }, recurringDelay);
+      }
     }
 
-    // Auto trigger after 1 second if not closed in this session
-    const isClosed = sessionStorage.getItem('welcome_popup_closed');
-    if (!isClosed) {
-      setTimeout(openPopup, 1000);
+    if (window.location.href.indexOf('customer_posted=true') !== -1 || (form && form.querySelector('.popup-form-success'))) {
+      setNeverShow();
+    }
+
+    if (!isNeverShow()) {
+      setTimeout(openPopup, initialDelay);
     }
 
     if (closeBtn) closeBtn.addEventListener('click', closePopup);
     if (backdrop) backdrop.addEventListener('click', closePopup);
     if (dismissBtn) dismissBtn.addEventListener('click', closePopup);
 
-    // ESC Key close
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && popup.classList.contains('is-visible')) {
-        closePopup();
-      }
-    });
+    if (dontShowCheckbox) {
+      dontShowCheckbox.addEventListener('change', function () {
+        if (this.checked) {
+          setNeverShow();
+        }
+      });
+    }
 
-    // One-click Promo Code Copy
     if (copyBtn && promoCode) {
       copyBtn.addEventListener('click', function () {
         const textToCopy = promoCode.textContent.trim();
@@ -427,13 +504,56 @@
 
 {% schema %}
 {
-  "name": "Welcome 10% Popup",
+  "name": "Welcome Popup (10% Off)",
   "tag": "section",
   "class": "section-welcome-popup",
-  "settings": [],
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_popup",
+      "label": "Enable Welcome Popup",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "initial_delay",
+      "label": "Initial delay before popup appears (Seconds)",
+      "default": 4
+    },
+    {
+      "type": "number",
+      "id": "recurring_delay",
+      "label": "Re-appear interval if closed without ticking 'Don't show again' (Seconds)",
+      "default": 40
+    },
+    {
+      "type": "text",
+      "id": "discount_badge",
+      "label": "Discount Badge Text",
+      "default": "SPECIAL OFFER — GET 10% OFF"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Welcome to FONT Boulderwear"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Join our bouldering community! Subscribe to our newsletter to receive 10% OFF your order plus exclusive access to new releases."
+    },
+    {
+      "type": "text",
+      "id": "promo_code",
+      "label": "Promo Code",
+      "default": "WELCOME10"
+    }
+  ],
   "presets": [
     {
-      "name": "Welcome 10% Popup"
+      "name": "Welcome Popup (10% Off)"
     }
   ]
 }
