@@ -1,5 +1,5 @@
-<div class="custom-recommendations-wrapper color-scheme-1" id="custom-recommendations-{{ section.id }}">
-  <div class="page-width">
+<div class="section section--page-width custom-recommendations-wrapper color-scheme-1" id="custom-recommendations-{{ section.id }}">
+  <div class="custom-recommendations-container">
     {% if section.settings.title != blank %}
       <h2 class="custom-recommendations__heading">{{ section.settings.title }}</h2>
     {% endif %}
@@ -74,8 +74,12 @@
   .custom-recommendations-wrapper {
     padding-top: 48px;
     padding-bottom: 48px;
-    width: 100%;
     background: #ffffff;
+  }
+
+  .custom-recommendations-container {
+    grid-column: 2 !important;
+    width: 100% !important;
   }
 
   .custom-recommendations__heading {
