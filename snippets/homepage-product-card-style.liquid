@@ -3,13 +3,13 @@
 {% endcomment %}
 
 <style>
-  /* 1. Hide top headings above cards in section_kx8Tk3 */
-  #shopify-section-section_kx8Tk3 [data-block-type="text"] {
+  /* 1. Target section_kx8Tk3 using attribute selector for dynamic section prefix */
+  [id*="section_kx8Tk3"] [data-block-type="text"] {
     display: none !important;
   }
 
   /* 2. Container card styling for each product column */
-  #shopify-section-section_kx8Tk3 [data-block-type="group"] {
+  [id*="section_kx8Tk3"] [data-block-type="group"] {
     background: #FAF8F5 !important;
     border: 1px solid #EAE4DC !important;
     border-radius: 12px !important;
@@ -22,14 +22,14 @@
     justify-content: space-between !important;
   }
 
-  #shopify-section-section_kx8Tk3 [data-block-type="group"]:hover {
+  [id*="section_kx8Tk3"] [data-block-type="group"]:hover {
     transform: translateY(-4px) !important;
     box-shadow: 0 8px 25px rgba(93, 43, 9, 0.14) !important;
   }
 
   /* 3. Product Card element resets */
-  #shopify-section-section_kx8Tk3 product-card,
-  #shopify-section-section_kx8Tk3 .product-card__content {
+  [id*="section_kx8Tk3"] product-card,
+  [id*="section_kx8Tk3"] .product-card__content {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
@@ -38,8 +38,8 @@
   }
 
   /* 4. Image gallery styling */
-  #shopify-section-section_kx8Tk3 card-gallery,
-  #shopify-section-section_kx8Tk3 .card-gallery {
+  [id*="section_kx8Tk3"] card-gallery,
+  [id*="section_kx8Tk3"] .card-gallery {
     border-radius: 12px 12px 0 0 !important;
     overflow: hidden !important;
     background: #FFFFFF !important;
@@ -47,16 +47,16 @@
     width: 100% !important;
   }
 
-  #shopify-section-section_kx8Tk3 card-gallery img,
-  #shopify-section-section_kx8Tk3 .card-gallery img {
+  [id*="section_kx8Tk3"] card-gallery img,
+  [id*="section_kx8Tk3"] .card-gallery img {
     border-radius: 12px 12px 0 0 !important;
     object-fit: cover !important;
   }
 
   /* 5. Product Title - BOLD, prominent, large font like Image 2 */
-  #shopify-section-section_kx8Tk3 product-title,
-  #shopify-section-section_kx8Tk3 product-title a,
-  #shopify-section-section_kx8Tk3 .product-card-gallery__title-placeholder a {
+  [id*="section_kx8Tk3"] product-title,
+  [id*="section_kx8Tk3"] product-title a,
+  [id*="section_kx8Tk3"] .product-card-gallery__title-placeholder a {
     font-size: 1.15rem !important;
     font-weight: 800 !important;
     color: #170b02 !important;
@@ -70,9 +70,9 @@
   }
 
   /* 6. Price styling */
-  #shopify-section-section_kx8Tk3 price-component,
-  #shopify-section-section_kx8Tk3 .price,
-  #shopify-section-section_kx8Tk3 [data-block-type="price"] {
+  [id*="section_kx8Tk3"] price-component,
+  [id*="section_kx8Tk3"] .price,
+  [id*="section_kx8Tk3"] [data-block-type="price"] {
     font-size: 1.02rem !important;
     font-weight: 700 !important;
     color: #170b02 !important;
@@ -81,12 +81,12 @@
   }
 
   /* 7. Hide duplicate price elements if present */
-  #shopify-section-section_kx8Tk3 [data-block-type="price"] ~ [data-block-type="price"] {
+  [id*="section_kx8Tk3"] [data-block-type="price"] ~ [data-block-type="price"] {
     display: none !important;
   }
 
   /* 8. Add to Bag Button - matching Image 2 style with store primary color #5d2b09 */
-  #shopify-section-section_kx8Tk3 .font-add-to-bag-btn {
+  [id*="section_kx8Tk3"] .font-add-to-bag-btn {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -107,18 +107,18 @@
     box-shadow: 0 2px 6px rgba(93, 43, 9, 0.2) !important;
   }
 
-  #shopify-section-section_kx8Tk3 .font-add-to-bag-btn:hover {
+  [id*="section_kx8Tk3"] .font-add-to-bag-btn:hover {
     background-color: #98591b !important;
     color: #ffffff !important;
     transform: scale(1.01) !important;
   }
 
   @media screen and (max-width: 749px) {
-    #shopify-section-section_kx8Tk3 product-title,
-    #shopify-section-section_kx8Tk3 product-title a {
+    [id*="section_kx8Tk3"] product-title,
+    [id*="section_kx8Tk3"] product-title a {
       font-size: 1rem !important;
     }
-    #shopify-section-section_kx8Tk3 .font-add-to-bag-btn {
+    [id*="section_kx8Tk3"] .font-add-to-bag-btn {
       font-size: 0.8rem !important;
       padding: 10px 12px !important;
     }
@@ -128,7 +128,7 @@
 <script>
   (function () {
     function setupCards() {
-      const section = document.getElementById('shopify-section-section_kx8Tk3');
+      const section = document.querySelector('[id*="section_kx8Tk3"]');
       if (!section) return;
 
       const groups = section.querySelectorAll('[data-block-type="group"]');
@@ -166,10 +166,6 @@
       setupCards();
     }
 
-    const section = document.getElementById('shopify-section-section_kx8Tk3');
-    if (section) {
-      const observer = new MutationObserver(setupCards);
-      observer.observe(section, { childList: true, subtree: true });
-    }
+    setInterval(setupCards, 800);
   })();
 </script>
