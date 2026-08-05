@@ -516,32 +516,59 @@
         }
       }
 
-      /* Product Recommendations Grid Layout (4 columns side-by-side on Desktop, 2 columns per row on Mobile) */
-      .product-recommendations .resource-list--grid,
-      .product-recommendations .resource-list,
-      .section-resource-list .resource-list--grid,
-      [data-testid="product-recommendations-section"] .resource-list--grid,
-      [data-testid="product-recommendations-section"] .resource-list {
+      /* Product Recommendations Grid Layout Force Override (4 columns side-by-side on Desktop, 2 columns per row on Mobile) */
+      html body .product-recommendations,
+      html body .section-resource-list,
+      html body .block-resource-list {
+        container-type: normal !important;
+      }
+
+      html body .product-recommendations .resource-list--grid,
+      html body .product-recommendations .resource-list,
+      html body .section-resource-list .resource-list--grid,
+      html body .block-resource-list .resource-list--grid,
+      html body [data-testid="product-recommendations-section"] .resource-list--grid,
+      html body [data-testid="product-recommendations-section"] .resource-list {
         display: grid !important;
         grid-template-columns: repeat(4, 1fr) !important;
         gap: 20px !important;
         width: 100% !important;
+        --resource-list-columns-per-row: 4 !important;
+        --resource-list-columns: repeat(4, 1fr) !important;
       }
 
-      .product-recommendations .resource-list__item,
-      .section-resource-list .resource-list__item {
+      html body .product-recommendations .resource-list__item,
+      html body .section-resource-list .resource-list__item {
         width: 100% !important;
         max-width: 100% !important;
       }
 
+      @container resource-list (min-width: 0px) {
+        html body .product-recommendations .resource-list--grid,
+        html body .section-resource-list .resource-list--grid {
+          grid-template-columns: repeat(4, 1fr) !important;
+          --resource-list-columns-per-row: 4 !important;
+        }
+      }
+
       @media screen and (max-width: 749px) {
-        .product-recommendations .resource-list--grid,
-        .product-recommendations .resource-list,
-        .section-resource-list .resource-list--grid,
-        [data-testid="product-recommendations-section"] .resource-list--grid,
-        [data-testid="product-recommendations-section"] .resource-list {
+        html body .product-recommendations .resource-list--grid,
+        html body .product-recommendations .resource-list,
+        html body .section-resource-list .resource-list--grid,
+        html body [data-testid="product-recommendations-section"] .resource-list--grid,
+        html body [data-testid="product-recommendations-section"] .resource-list {
           grid-template-columns: repeat(2, 1fr) !important;
           gap: 12px !important;
+          --resource-list-columns-per-row: 2 !important;
+          --resource-list-columns-mobile: repeat(2, 1fr) !important;
+        }
+      }
+
+      @container resource-list (max-width: 749px) {
+        html body .product-recommendations .resource-list--grid,
+        html body .section-resource-list .resource-list--grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+          --resource-list-columns-per-row: 2 !important;
         }
       }
     </style>
