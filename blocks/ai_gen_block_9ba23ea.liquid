@@ -186,6 +186,7 @@
           const clone = s.cloneNode(true);
           clone.setAttribute('aria-hidden', 'true');
           clone.setAttribute('tabindex', '-1');
+          clone.classList.add('carousel-marquee-clone-{{ ai_gen_id }}');
           this.track.appendChild(clone);
         });
       }
@@ -215,13 +216,7 @@
           s.style.minWidth = slideW + 'px';
           s.style.flex     = '0 0 ' + slideW + 'px';
         });
-        const origCount = {{ block.settings.image_1 != blank ? 1 : 0 }}
-          + {{ block.settings.image_2 != blank ? 1 : 0 }}
-          + {{ block.settings.image_3 != blank ? 1 : 0 }}
-          + {{ block.settings.image_4 != blank ? 1 : 0 }}
-          + {{ block.settings.image_5 != blank ? 1 : 0 }}
-          + {{ block.settings.image_6 != blank ? 1 : 0 }}
-          + {{ block.settings.image_7 != blank ? 1 : 0 }};
+        const origCount = this.track.querySelectorAll('.ai-image-carousel-slide-{{ ai_gen_id }}:not(.carousel-marquee-clone-{{ ai_gen_id }})').length;
         this.loopWidth = origCount * (slideW + gap);
         if (this.position > this.loopWidth) this.position = this.position % this.loopWidth;
       }, 200);
