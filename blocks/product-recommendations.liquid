@@ -40,6 +40,28 @@
   data-testid="product-recommendations-block"
   {{ block.shopify_attributes }}
 >
+  <style>
+    #product-recommendations-{{ block.id }} .resource-list,
+    #product-recommendations-{{ block.id }} .resource-list--grid,
+    #product-recommendations-{{ block.id }} [data-testid="resource-list-grid"] {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      gap: 16px !important;
+      width: 100% !important;
+    }
+    #product-recommendations-{{ block.id }} .resource-list__item {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    @media screen and (max-width: 749px) {
+      #product-recommendations-{{ block.id }} .resource-list,
+      #product-recommendations-{{ block.id }} .resource-list--grid,
+      #product-recommendations-{{ block.id }} [data-testid="resource-list-grid"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+      }
+    }
+  </style>
   <div
     class="
       {% if block_settings.inherit_color_scheme == false %}color-{{ block_settings.color_scheme }}{% endif %}

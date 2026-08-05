@@ -36,6 +36,28 @@
   data-recommendations-performed="{{ recommendations.performed }}"
   {{ section.shopify_attributes }}
 >
+  <style>
+    #product-recommendations-{{ section.id }} .resource-list,
+    #product-recommendations-{{ section.id }} .resource-list--grid,
+    #product-recommendations-{{ section.id }} [data-testid="resource-list-grid"] {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      gap: 16px !important;
+      width: 100% !important;
+    }
+    #product-recommendations-{{ section.id }} .resource-list__item {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+    @media screen and (max-width: 749px) {
+      #product-recommendations-{{ section.id }} .resource-list,
+      #product-recommendations-{{ section.id }} .resource-list--grid,
+      #product-recommendations-{{ section.id }} [data-testid="resource-list-grid"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+      }
+    }
+  </style>
   <div class="section-background color-{{ section.settings.color_scheme }}"></div>
   <div
     class="
