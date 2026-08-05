@@ -1499,17 +1499,17 @@
         "vertical_alignment_flex_direction_column": "center",
         "gap": 0,
         "section_width": "page-width",
-        "section_height": "small",
-        "section_height_custom": 30,
-        "color_scheme": "scheme-2",
+        "section_height": "medium",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-red",
         "toggle_overlay": true,
         "overlay_color": "#03030352",
         "overlay_style": "gradient",
         "gradient_direction": "to bottom",
         "blurred_reflection": false,
         "reflection_opacity": 75,
-        "padding-block-start": 40,
-        "padding-block-end": 40
+        "padding-block-start": 64,
+        "padding-block-end": 64
       }
     },
     "17726432325eb85da7": {
