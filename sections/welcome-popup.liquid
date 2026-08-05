@@ -1,0 +1,440 @@
+<div class="welcome-popup-overlay" id="WelcomePopup" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="PopupTitle">
+  <div class="welcome-popup-backdrop" id="WelcomePopupBackdrop"></div>
+  
+  <div class="welcome-popup-card">
+    <button type="button" class="welcome-popup-close" id="WelcomePopupClose" aria-label="Close popup">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="welcome-popup-badge">
+      <span class="badge-icon">🎁</span>
+      <span>SPECIAL OFFER — GET 10% OFF</span>
+    </div>
+
+    <h2 class="welcome-popup-title" id="PopupTitle">Welcome to FONT Boulderwear</h2>
+    <p class="welcome-popup-subtitle">
+      Join our bouldering community! Subscribe to our newsletter to receive <strong>10% OFF</strong> your order plus exclusive access to new crag releases.
+    </p>
+
+    <!-- Promo Code Display Box -->
+    <div class="welcome-popup-code-box">
+      <div class="code-details">
+        <span class="code-label">PROMO CODE:</span>
+        <span class="code-value" id="WelcomePromoCode">WELCOME10</span>
+      </div>
+      <button type="button" class="code-copy-btn" id="WelcomeCopyBtn">
+        <span id="CopyBtnText">Copy</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Newsletter Subscription Form -->
+    {% form 'customer', class: 'welcome-popup-form', id: 'WelcomeNewsletterForm' %}
+      <input type="hidden" name="contact[tags]" value="newsletter,welcome_popup_10">
+      
+      {% if form.posted_successfully? %}
+        <div class="popup-form-success">
+          🎉 Thank you for subscribing! Use promo code <strong>WELCOME10</strong> at checkout for 10% off!
+        </div>
+      {% else %}
+        {% if form.errors %}
+          <div class="popup-form-error">
+            {{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}
+          </div>
+        {% endif %}
+
+        <div class="popup-input-group">
+          <input
+            type="email"
+            name="contact[email]"
+            class="popup-input"
+            value="{{ form.email }}"
+            placeholder="Enter your email address"
+            autocorrect="off"
+            autocapitalize="off"
+            autocomplete="email"
+            required
+          >
+          <button type="submit" class="popup-submit-btn" name="commit">
+            <span>GET 10% OFF</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      {% endif %}
+    {% endform %}
+
+    <button type="button" class="welcome-popup-dismiss" id="WelcomePopupDismiss">
+      No thanks, I'll pay full price
+    </button>
+  </div>
+</div>
+
+<style>
+  .welcome-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .welcome-popup-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .welcome-popup-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 12, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .welcome-popup-card {
+    position: relative;
+    z-index: 2;
+    background: #ffffff;
+    width: 100%;
+    max-width: 520px;
+    padding: 40px 36px 32px 36px;
+    border-radius: 20px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    transform: scale(0.92) translateY(16px);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+  }
+
+  .welcome-popup-overlay.is-visible .welcome-popup-card {
+    transform: scale(1) translateY(0);
+  }
+
+  .welcome-popup-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: #f3f3f5;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #444444;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+
+  .welcome-popup-close:hover {
+    background: #e4e4e7;
+    color: #000000;
+    transform: rotate(90deg);
+  }
+
+  .welcome-popup-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff0f0;
+    color: #d32f2f;
+    border: 1px solid #ffcdd2;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+
+  .welcome-popup-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #111111;
+    margin: 0 0 10px 0;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  .welcome-popup-subtitle {
+    font-size: 1rem;
+    color: #555555;
+    line-height: 1.55;
+    margin: 0 0 24px 0;
+  }
+
+  .welcome-popup-subtitle strong {
+    color: #d32f2f;
+  }
+
+  /* Code Display Box */
+  .welcome-popup-code-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8f9fa;
+    border: 2px dashed #d32f2f;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+  }
+
+  .code-details {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .code-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #666666;
+    letter-spacing: 0.5px;
+  }
+
+  .code-value {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #d32f2f;
+    letter-spacing: 1.5px;
+    font-family: monospace, sans-serif;
+  }
+
+  .code-copy-btn {
+    background: #111111;
+    color: #ffffff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+
+  .code-copy-btn:hover {
+    background: #d32f2f;
+    transform: translateY(-1px);
+  }
+
+  .code-copy-btn.copied {
+    background: #2e7d32 !important;
+  }
+
+  /* Form Styling */
+  .welcome-popup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 18px;
+  }
+
+  .popup-input-group {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .popup-input {
+    flex: 1;
+    height: 48px;
+    padding: 0 16px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 0.98rem;
+    color: #111111;
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .popup-input:focus {
+    border-color: #d32f2f;
+  }
+
+  .popup-submit-btn {
+    height: 48px;
+    padding: 0 20px;
+    background: #d32f2f;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s ease, transform 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .popup-submit-btn:hover {
+    background: #b71c1c;
+    transform: translateY(-1px);
+  }
+
+  .popup-form-success {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .popup-form-error {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .welcome-popup-dismiss {
+    background: transparent;
+    border: none;
+    color: #888888;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+  }
+
+  .welcome-popup-dismiss:hover {
+    color: #111111;
+  }
+
+  @media screen and (max-width: 580px) {
+    .welcome-popup-card {
+      padding: 32px 20px 24px 20px;
+      border-radius: 16px;
+    }
+
+    .welcome-popup-title {
+      font-size: 1.45rem;
+    }
+
+    .welcome-popup-subtitle {
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+    }
+
+    .popup-input-group {
+      flex-direction: column;
+    }
+
+    .popup-input, .popup-submit-btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    const popup = document.getElementById('WelcomePopup');
+    const closeBtn = document.getElementById('WelcomePopupClose');
+    const backdrop = document.getElementById('WelcomePopupBackdrop');
+    const dismissBtn = document.getElementById('WelcomePopupDismiss');
+    const copyBtn = document.getElementById('WelcomeCopyBtn');
+    const copyText = document.getElementById('CopyBtnText');
+    const promoCode = document.getElementById('WelcomePromoCode');
+
+    if (!popup) return;
+
+    function openPopup() {
+      popup.classList.add('is-visible');
+      popup.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePopup() {
+      popup.classList.remove('is-visible');
+      popup.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      sessionStorage.setItem('welcome_popup_closed', 'true');
+    }
+
+    // Auto trigger after 1 second if not closed in this session
+    const isClosed = sessionStorage.getItem('welcome_popup_closed');
+    if (!isClosed) {
+      setTimeout(openPopup, 1000);
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closePopup);
+    if (backdrop) backdrop.addEventListener('click', closePopup);
+    if (dismissBtn) dismissBtn.addEventListener('click', closePopup);
+
+    // ESC Key close
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && popup.classList.contains('is-visible')) {
+        closePopup();
+      }
+    });
+
+    // One-click Promo Code Copy
+    if (copyBtn && promoCode) {
+      copyBtn.addEventListener('click', function () {
+        const textToCopy = promoCode.textContent.trim();
+        navigator.clipboard.writeText(textToCopy).then(function () {
+          copyBtn.classList.add('copied');
+          if (copyText) copyText.textContent = 'COPIED! ✓';
+
+          setTimeout(function () {
+            copyBtn.classList.remove('copied');
+            if (copyText) copyText.textContent = 'Copy';
+          }, 2500);
+        }).catch(function (err) {
+          console.error('Failed to copy code: ', err);
+        });
+      });
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Welcome 10% Popup",
+  "tag": "section",
+  "class": "section-welcome-popup",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Welcome 10% Popup"
+    }
+  ]
+}
+{% endschema %}
