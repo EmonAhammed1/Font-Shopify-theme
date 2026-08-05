@@ -136,6 +136,24 @@
         --line-height: 1.55 !important;
       }
 
+      /* Mobile Font Size Fix: Keep desktop large, but compact 1.45rem on mobile */
+      @media screen and (max-width: 749px) {
+        [id*="hero_pjNAy4"] h4,
+        [id*="hero_pjNAy4"] .text-block,
+        [id*="hero_pjNAy4"] [data-block-type="text"],
+        [id*="hero_pjNAy4"] [data-block-type="text"] * {
+          font-size: 1.45rem !important;
+          line-height: 1.45 !important;
+          --font-size: 1.45rem !important;
+          padding-left: 8px !important;
+          padding-right: 8px !important;
+        }
+
+        [id*="hero_pjNAy4"] [data-block-type="image"] img {
+          max-width: 130px !important;
+        }
+      }
+
       /* Hidden initially before scrolling to this section */
       [id*="hero_pjNAy4"] .text-block,
       [id*="hero_pjNAy4"] [data-block-type="text"] {
