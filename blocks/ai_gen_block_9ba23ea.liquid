@@ -1,20 +1,18 @@
 {% doc %}
   @prompt
-    Image Carousel Block with Multi-Card Display (3 on Desktop, 1 on Mobile) and Full Theme Customization Controls.
+    Marquee-style Image Carousel: continuous right-to-left auto-scroll, pause on hover, mouse drag, touch swipe, click to /collections/all.
 {% enddoc %}
 {% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
 
 {% style %}
   .ai-image-carousel-{{ ai_gen_id }} {
     display: block;
-    width: {{ block.settings.desktop_width_percent | default: 100 }}%;
+    width: 100%;
     max-width: 100%;
     position: relative;
     overflow: hidden;
-    text-decoration: none;
-    color: inherit;
     margin: 0 auto;
-    padding-block: 10px;
+    padding-block: {{ block.settings.section_padding | default: 10 }}px;
   }
 
   .ai-image-carousel-container-{{ ai_gen_id }} {
@@ -27,25 +25,28 @@
   .ai-image-carousel-track-{{ ai_gen_id }} {
     display: flex;
     gap: {{ block.settings.slide_gap | default: 16 }}px;
-    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
     height: 100%;
     will-change: transform;
+    /* NO transition here — JS controls transform directly */
   }
 
   .ai-image-carousel-slide-{{ ai_gen_id }} {
-    flex: 0 0 calc((100% - ({{ block.settings.slide_gap | default: 16 }}px * ({{ block.settings.slides_to_show_desktop | default: 4 }} - 1))) / {{ block.settings.slides_to_show_desktop | default: 4 }});
-    min-width: calc((100% - ({{ block.settings.slide_gap | default: 16 }}px * ({{ block.settings.slides_to_show_desktop | default: 4 }} - 1))) / {{ block.settings.slides_to_show_desktop | default: 4 }});
+    flex: 0 0 auto;
     height: 100%;
     position: relative;
     border-radius: {{ block.settings.slide_border_radius | default: 12 }}px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    cursor: pointer;
   }
 
   .ai-image-carousel-slide-{{ ai_gen_id }}:hover {
-    transform: translateY(-3px);
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+    transform: translateY(-3px) scale(1.01);
   }
 
   .ai-image-carousel-slide-{{ ai_gen_id }} img {
@@ -53,108 +54,23 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
   .ai-image-carousel-placeholder-{{ ai_gen_id }} {
     width: 100%;
     height: 100%;
-    background-color: #f4f4f4;
+    background: #f4f4f4;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .ai-image-carousel-placeholder-{{ ai_gen_id }} svg {
-    width: 100%;
-    height: 100%;
-    max-width: 500px;
-    max-height: 500px;
-  }
-
-  .ai-image-carousel-nav-{{ ai_gen_id }} {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: {{ block.settings.nav_button_color | default: '#ffffff' }};
-    color: {{ block.settings.nav_button_icon_color | default: '#000000' }};
-    border: none;
-    width: {{ block.settings.nav_button_size | default: 44 }}px;
-    height: {{ block.settings.nav_button_size | default: 44 }}px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 5;
-    opacity: {{ block.settings.nav_button_opacity | default: 80 | divided_by: 100.0 }};
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    transition: opacity 0.3s ease, transform 0.2s ease;
-  }
-
-  .ai-image-carousel-nav-{{ ai_gen_id }}:hover {
-    opacity: 1;
-    transform: translateY(-50%) scale(1.1);
-  }
-
-  .ai-image-carousel-nav-{{ ai_gen_id }}--prev {
-    left: {{ block.settings.nav_button_offset | default: 16 }}px;
-  }
-
-  .ai-image-carousel-nav-{{ ai_gen_id }}--next {
-    right: {{ block.settings.nav_button_offset | default: 16 }}px;
-  }
-
-  .ai-image-carousel-nav-{{ ai_gen_id }} svg {
-    width: calc({{ block.settings.nav_button_size | default: 44 }}px * 0.5);
-    height: calc({{ block.settings.nav_button_size | default: 44 }}px * 0.5);
-  }
-
-  .ai-image-carousel-dots-{{ ai_gen_id }} {
-    position: absolute;
-    bottom: {{ block.settings.dots_offset | default: 16 }}px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-    z-index: 5;
-  }
-
-  .ai-image-carousel-dot-{{ ai_gen_id }} {
-    width: {{ block.settings.dot_size | default: 10 }}px;
-    height: {{ block.settings.dot_size | default: 10 }}px;
-    border-radius: 50%;
-    background-color: {{ block.settings.dot_color | default: '#ffffff' }};
-    opacity: {{ block.settings.dot_opacity | default: 50 | divided_by: 100.0 }};
-    cursor: pointer;
-    border: none;
-    padding: 0;
-    transition: opacity 0.3s ease, width 0.3s ease;
-  }
-
-  .ai-image-carousel-dot-{{ ai_gen_id }}.active {
-    opacity: 1;
-    width: calc({{ block.settings.dot_size | default: 10 }}px * 2.2);
-    border-radius: 10px;
   }
 
   @media screen and (max-width: 749px) {
     .ai-image-carousel-container-{{ ai_gen_id }} {
-      height: {{ block.settings.carousel_height_mobile | default: 320 }}px;
-    }
-
-    .ai-image-carousel-slide-{{ ai_gen_id }} {
-      flex: 0 0 calc((100% - ({{ block.settings.slide_gap | default: 16 }}px * ({{ block.settings.slides_to_show_mobile | default: 1 }} - 1))) / {{ block.settings.slides_to_show_mobile | default: 1 }}) !important;
-      min-width: calc((100% - ({{ block.settings.slide_gap | default: 16 }}px * ({{ block.settings.slides_to_show_mobile | default: 1 }} - 1))) / {{ block.settings.slides_to_show_mobile | default: 1 }}) !important;
-    }
-
-    .ai-image-carousel-nav-{{ ai_gen_id }} {
-      width: calc({{ block.settings.nav_button_size | default: 44 }}px * 0.85);
-      height: calc({{ block.settings.nav_button_size | default: 44 }}px * 0.85);
-    }
-
-    .ai-image-carousel-nav-{{ ai_gen_id }} svg {
-      width: calc({{ block.settings.nav_button_size | default: 44 }}px * 0.45);
-      height: calc({{ block.settings.nav_button_size | default: 44 }}px * 0.45);
+      height: {{ block.settings.carousel_height_mobile | default: 280 }}px;
     }
   }
 {% endstyle %}
@@ -162,453 +78,280 @@
 <div class="ai-image-carousel-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
   <image-carousel-{{ ai_gen_id }} class="ai-image-carousel-container-{{ ai_gen_id }}">
     <div class="ai-image-carousel-track-{{ ai_gen_id }}">
+
       {% if block.settings.image_1 != blank %}
-        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
-          <img
-            src="{{ block.settings.image_1 | image_url: width: 1600 }}"
-            alt="{{ block.settings.image_1.alt | escape }}"
-            loading="lazy"
-            width="{{ block.settings.image_1.width }}"
-            height="{{ block.settings.image_1.height }}"
-            draggable="false"
-          >
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }}">
+          <img src="{{ block.settings.image_1 | image_url: width: 1200 }}" alt="{{ block.settings.image_1.alt | escape }}" loading="lazy" draggable="false">
         </a>
       {% else %}
-        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
-          <div class="ai-image-carousel-placeholder-{{ ai_gen_id }}">
-            {{ 'image' | placeholder_svg_tag }}
-          </div>
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }}">
+          <div class="ai-image-carousel-placeholder-{{ ai_gen_id }}">{{ 'image' | placeholder_svg_tag }}</div>
         </a>
       {% endif %}
 
       {% if block.settings.image_2 != blank %}
-        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
-          <img
-            src="{{ block.settings.image_2 | image_url: width: 1600 }}"
-            alt="{{ block.settings.image_2.alt | escape }}"
-            loading="lazy"
-            width="{{ block.settings.image_2.width }}"
-            height="{{ block.settings.image_2.height }}"
-            draggable="false"
-          >
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }}">
+          <img src="{{ block.settings.image_2 | image_url: width: 1200 }}" alt="{{ block.settings.image_2.alt | escape }}" loading="lazy" draggable="false">
         </a>
       {% endif %}
 
       {% if block.settings.image_3 != blank %}
-        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
-          <img
-            src="{{ block.settings.image_3 | image_url: width: 1600 }}"
-            alt="{{ block.settings.image_3.alt | escape }}"
-            loading="lazy"
-            width="{{ block.settings.image_3.width }}"
-            height="{{ block.settings.image_3.height }}"
-            draggable="false"
-          >
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }}">
+          <img src="{{ block.settings.image_3 | image_url: width: 1200 }}" alt="{{ block.settings.image_3.alt | escape }}" loading="lazy" draggable="false">
         </a>
       {% endif %}
 
       {% if block.settings.image_4 != blank %}
-        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
-          <img
-            src="{{ block.settings.image_4 | image_url: width: 1600 }}"
-            alt="{{ block.settings.image_4.alt | escape }}"
-            loading="lazy"
-            width="{{ block.settings.image_4.width }}"
-            height="{{ block.settings.image_4.height }}"
-            draggable="false"
-          >
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }}">
+          <img src="{{ block.settings.image_4 | image_url: width: 1200 }}" alt="{{ block.settings.image_4.alt | escape }}" loading="lazy" draggable="false">
         </a>
       {% endif %}
 
       {% if block.settings.image_5 != blank %}
-        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
-          <img
-            src="{{ block.settings.image_5 | image_url: width: 1600 }}"
-            alt="{{ block.settings.image_5.alt | escape }}"
-            loading="lazy"
-            width="{{ block.settings.image_5.width }}"
-            height="{{ block.settings.image_5.height }}"
-            draggable="false"
-          >
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }}">
+          <img src="{{ block.settings.image_5 | image_url: width: 1200 }}" alt="{{ block.settings.image_5.alt | escape }}" loading="lazy" draggable="false">
         </a>
       {% endif %}
 
       {% if block.settings.image_6 != blank %}
-        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
-          <img
-            src="{{ block.settings.image_6 | image_url: width: 1600 }}"
-            alt="{{ block.settings.image_6.alt | escape }}"
-            loading="lazy"
-            width="{{ block.settings.image_6.width }}"
-            height="{{ block.settings.image_6.height }}"
-            draggable="false"
-          >
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }}">
+          <img src="{{ block.settings.image_6 | image_url: width: 1200 }}" alt="{{ block.settings.image_6.alt | escape }}" loading="lazy" draggable="false">
         </a>
       {% endif %}
 
       {% if block.settings.image_7 != blank %}
-        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }} ai-carousel-link-{{ ai_gen_id }}">
-          <img
-            src="{{ block.settings.image_7 | image_url: width: 1600 }}"
-            alt="{{ block.settings.image_7.alt | escape }}"
-            loading="lazy"
-            width="{{ block.settings.image_7.width }}"
-            height="{{ block.settings.image_7.height }}"
-            draggable="false"
-          >
+        <a href="{{ block.settings.link_url | default: '/collections/all' }}" class="ai-image-carousel-slide-{{ ai_gen_id }}">
+          <img src="{{ block.settings.image_7 | image_url: width: 1200 }}" alt="{{ block.settings.image_7.alt | escape }}" loading="lazy" draggable="false">
         </a>
       {% endif %}
+
     </div>
-
-    {% if block.settings.show_navigation %}
-      <button
-        class="ai-image-carousel-nav-{{ ai_gen_id }} ai-image-carousel-nav-{{ ai_gen_id }}--prev"
-        aria-label="Previous slide"
-        type="button"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-      </button>
-
-      <button
-        class="ai-image-carousel-nav-{{ ai_gen_id }} ai-image-carousel-nav-{{ ai_gen_id }}--next"
-        aria-label="Next slide"
-        type="button"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-      </button>
-    {% endif %}
-
-    {% if block.settings.show_dots %}
-      <div class="ai-image-carousel-dots-{{ ai_gen_id }}"></div>
-    {% endif %}
   </image-carousel-{{ ai_gen_id }}>
 </div>
 
 <script>
-  (function() {
-    class ImageCarousel{{ ai_gen_id }} extends HTMLElement {
-      constructor() {
-        super();
-        this.realSlideCount = 0;
-        this.slidesToShow = 4;
-        this.cloneCount = 0;
-        this.currentIndex = 0; // index into cloned track (starts at cloneCount)
-        this.autoplayInterval = null;
-        this.isTransitioning = false;
-      }
+(function() {
+  class ImageCarousel{{ ai_gen_id }} extends HTMLElement {
+    connectedCallback() {
+      this.track        = this.querySelector('.ai-image-carousel-track-{{ ai_gen_id }}');
+      this.wrapper      = this.closest('.ai-image-carousel-{{ ai_gen_id }}');
 
-      connectedCallback() {
-        this.track = this.querySelector('.ai-image-carousel-track-{{ ai_gen_id }}');
-        this.prevButton = this.querySelector('.ai-image-carousel-nav-{{ ai_gen_id }}--prev');
-        this.nextButton = this.querySelector('.ai-image-carousel-nav-{{ ai_gen_id }}--next');
-        this.dotsContainer = this.querySelector('.ai-image-carousel-dots-{{ ai_gen_id }}');
+      this.scrollSpeed  = {{ block.settings.scroll_speed | default: 60 }};   // px per second
+      this.slideGap     = {{ block.settings.slide_gap | default: 16 }};
+      this.slidesToShow = this._getSlidesToShow();
+      this.position     = 0;
+      this.isPaused     = false;
+      this.isDragging   = false;
+      this.hasDragged   = false;
+      this.lastTime     = null;
+      this.loopWidth    = 0;
 
-        const originalSlides = Array.from(this.track.querySelectorAll('.ai-image-carousel-slide-{{ ai_gen_id }}'));
-        this.realSlideCount = originalSlides.length;
+      // Wait for fonts/images then init
+      requestAnimationFrame(() => { this._init(); });
+    }
 
-        if (this.realSlideCount <= 1) {
-          if (this.prevButton) this.prevButton.style.display = 'none';
-          if (this.nextButton) this.nextButton.style.display = 'none';
-          if (this.dotsContainer) this.dotsContainer.style.display = 'none';
-          return;
-        }
+    _getSlidesToShow() {
+      return window.innerWidth < 750
+        ? ({{ block.settings.slides_to_show_mobile | default: 1 }})
+        : ({{ block.settings.slides_to_show_desktop | default: 4 }});
+    }
 
-        this.slidesToShow = this.getSlidesToShow();
-        this.cloneCount = this.slidesToShow + 1;
+    _getSlideWidth() {
+      const gap = this.slideGap;
+      const n   = this.slidesToShow;
+      return (this.offsetWidth - gap * (n - 1)) / n;
+    }
 
-        // Prepend clones from end
-        for (let i = 0; i < this.cloneCount; i++) {
-          const src = originalSlides[this.realSlideCount - 1 - (i % this.realSlideCount)];
-          const clone = src.cloneNode(true);
+    _init() {
+      const origSlides = Array.from(this.track.querySelectorAll('.ai-image-carousel-slide-{{ ai_gen_id }}'));
+      if (origSlides.length === 0) return;
+
+      const slideW = this._getSlideWidth();
+      const gap    = this.slideGap;
+
+      // Set fixed width on each slide
+      origSlides.forEach(s => {
+        s.style.width    = slideW + 'px';
+        s.style.minWidth = slideW + 'px';
+        s.style.flex     = '0 0 ' + slideW + 'px';
+      });
+
+      // Calculate total width of one real set
+      this.loopWidth = origSlides.length * (slideW + gap);
+
+      // Clone slides to fill at least 3x viewport width for seamless loop
+      const needed = Math.ceil((this.offsetWidth * 3) / this.loopWidth) + 1;
+      for (let i = 0; i < needed; i++) {
+        origSlides.forEach(s => {
+          const clone = s.cloneNode(true);
           clone.setAttribute('aria-hidden', 'true');
-          clone.classList.add('carousel-clone-{{ ai_gen_id }}');
-          this.track.insertBefore(clone, this.track.firstChild);
-        }
-
-        // Append clones from start
-        for (let i = 0; i < this.cloneCount; i++) {
-          const src = originalSlides[i % this.realSlideCount];
-          const clone = src.cloneNode(true);
-          clone.setAttribute('aria-hidden', 'true');
-          clone.classList.add('carousel-clone-{{ ai_gen_id }}');
+          clone.setAttribute('tabindex', '-1');
           this.track.appendChild(clone);
-        }
-
-        this.allSlides = Array.from(this.track.querySelectorAll('.ai-image-carousel-slide-{{ ai_gen_id }}'));
-        this.currentIndex = this.cloneCount;
-
-        // Jump to real start without animation
-        this.track.style.transition = 'none';
-        this._applyTransform();
-
-        this.setupNavigation();
-        this.setupDots();
-        this.setupAutoplay();
-        this.setupSwipe();
-
-        window.addEventListener('resize', () => {
-          this.slidesToShow = this.getSlidesToShow();
-          this.setupDots();
-          this._applyTransform();
         });
       }
 
-      getSlidesToShow() {
-        const isMobile = window.innerWidth < 750;
-        return isMobile
-          ? (parseInt('{{ block.settings.slides_to_show_mobile | default: 1 }}', 10) || 1)
-          : (parseInt('{{ block.settings.slides_to_show_desktop | default: 4 }}', 10) || 4);
-      }
+      // Remove transition (JS controls position)
+      this.track.style.transition = 'none';
 
-      getRealIndex() {
-        return (this.currentIndex - this.cloneCount + this.realSlideCount * 100) % this.realSlideCount;
-      }
+      this._setupHover();
+      this._setupMouseDrag();
+      this._setupTouchSwipe();
+      this._startRaf();
 
-      _getGap() {
-        return parseInt('{{ block.settings.slide_gap | default: 16 }}', 10) || 16;
-      }
-
-      _getSlideWidth() {
-        const gap = this._getGap();
-        const containerWidth = this.offsetWidth || this.track.parentElement.offsetWidth;
-        return (containerWidth - (gap * (this.slidesToShow - 1))) / this.slidesToShow;
-      }
-
-      _applyTransform(animated) {
-        const slideWidth = this._getSlideWidth();
-        const gap = this._getGap();
-        const shift = (slideWidth + gap) * this.currentIndex;
-        if (animated) {
-          this.track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
-        } else {
-          this.track.style.transition = 'none';
-        }
-        this.track.style.transform = 'translateX(-' + shift + 'px)';
-      }
-
-      _afterTransition() {
-        const total = this.allSlides.length;
-        const maxReal = this.cloneCount + this.realSlideCount;
-
-        // Jumped past end clones → jump silently to real start area
-        if (this.currentIndex >= maxReal) {
-          this.currentIndex = this.cloneCount + (this.currentIndex - maxReal);
-          this._applyTransform(false);
-        }
-        // Jumped before start clones → jump silently to real end area
-        else if (this.currentIndex < this.cloneCount) {
-          this.currentIndex = maxReal - (this.cloneCount - this.currentIndex);
-          this._applyTransform(false);
-        }
-
-        this.isTransitioning = false;
-        this._updateDots();
-      }
-
-      setupNavigation() {
-        if (this.prevButton) {
-          this.prevButton.addEventListener('click', (e) => {
-            e.preventDefault(); e.stopPropagation();
-            this.goToPrev();
-          });
-        }
-        if (this.nextButton) {
-          this.nextButton.addEventListener('click', (e) => {
-            e.preventDefault(); e.stopPropagation();
-            this.goToNext();
-          });
-        }
-      }
-
-      setupDots() {
-        if (!this.dotsContainer) return;
-        this.dotsContainer.innerHTML = '';
-        for (let i = 0; i < this.realSlideCount; i++) {
-          const dot = document.createElement('button');
-          dot.classList.add('ai-image-carousel-dot-{{ ai_gen_id }}');
-          dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
-          dot.setAttribute('type', 'button');
-          if (i === 0) dot.classList.add('active');
-          dot.addEventListener('click', (e) => {
-            e.preventDefault(); e.stopPropagation();
-            this.goToReal(i);
-          });
-          this.dotsContainer.appendChild(dot);
-        }
-        this.dots = this.querySelectorAll('.ai-image-carousel-dot-{{ ai_gen_id }}');
-      }
-
-      _updateDots() {
-        if (!this.dots) return;
-        const realIdx = this.getRealIndex();
-        this.dots.forEach((dot, i) => dot.classList.toggle('active', i === realIdx));
-      }
-
-      setupAutoplay() {
-        const autoplayEnabled = {{ block.settings.autoplay | default: true }};
-        const autoplaySpeed = {{ block.settings.autoplay_speed | default: 5 }} * 1000;
-        if (autoplayEnabled && this.realSlideCount > 1) {
-          this.startAutoplayTimer(autoplaySpeed);
-          this.addEventListener('mouseenter', () => { if (this.autoplayInterval) clearInterval(this.autoplayInterval); });
-          this.addEventListener('mouseleave', () => { this.startAutoplayTimer(autoplaySpeed); });
-        }
-      }
-
-      startAutoplayTimer(speedMs) {
-        if (this.autoplayInterval) clearInterval(this.autoplayInterval);
-        this.autoplayInterval = setInterval(() => { this.goToNext(); }, speedMs);
-      }
-
-      goToNext() {
-        if (this.isTransitioning) return;
-        this.isTransitioning = true;
-        this.currentIndex++;
-        this._applyTransform(true);
-        this.track.addEventListener('transitionend', () => { this._afterTransition(); }, { once: true });
-        this._updateDots();
-      }
-
-      goToPrev() {
-        if (this.isTransitioning) return;
-        this.isTransitioning = true;
-        this.currentIndex--;
-        this._applyTransform(true);
-        this.track.addEventListener('transitionend', () => { this._afterTransition(); }, { once: true });
-        this._updateDots();
-      }
-
-      goToReal(realIdx) {
-        this.currentIndex = this.cloneCount + realIdx;
-        this._applyTransform(true);
-        this._updateDots();
-      }
-
-      setupSwipe() {
-        let startX = 0;
-        let isDragging = false;
-        let dragOffsetX = 0;
-        let hasDragged = false;
-        let touchStartX = 0;
-        let touchDragX = 0;
-        let touchHasDragged = false;
-        const SWIPE_THRESHOLD = 50;
-        const CLICK_BLOCK_THRESHOLD = 5;
-
-        // ── Mouse drag ──────────────────────────────────────────
-        const onMouseMove = (e) => {
-          // Cancel if mouse button was released outside window
-          if (e.buttons !== 1) { onMouseUp(); return; }
-          const dx = e.clientX - startX;
-          dragOffsetX = dx;
-          if (Math.abs(dx) > CLICK_BLOCK_THRESHOLD) hasDragged = true;
-          const base = (this._getSlideWidth() + this._getGap()) * this.currentIndex;
-          this.track.style.transform = 'translateX(' + (-base + dx) + 'px)';
-        };
-
-        const onMouseUp = () => {
-          if (!isDragging) return;
-          isDragging = false;
-          this.track.style.cursor = 'grab';
-          window.removeEventListener('mousemove', onMouseMove);
-          window.removeEventListener('mouseup', onMouseUp);
-
-          if (dragOffsetX < -SWIPE_THRESHOLD) this.goToNext();
-          else if (dragOffsetX > SWIPE_THRESHOLD) this.goToPrev();
-          else this._applyTransform(true);
-
-          const autoplayEnabled = {{ block.settings.autoplay | default: true }};
-          const autoplaySpeed = {{ block.settings.autoplay_speed | default: 5 }} * 1000;
-          if (autoplayEnabled) this.startAutoplayTimer(autoplaySpeed);
-        };
-
-        const onMouseDown = (e) => {
-          if (e.button !== 0) return;
-          e.preventDefault();
-          startX = e.clientX;
-          isDragging = true;
-          dragOffsetX = 0;
-          hasDragged = false;
-          this.track.style.cursor = 'grabbing';
-          this.track.style.transition = 'none';
-          if (this.autoplayInterval) clearInterval(this.autoplayInterval);
-          window.addEventListener('mousemove', onMouseMove);
-          window.addEventListener('mouseup', onMouseUp);
-        };
-
-        // ── Touch swipe ─────────────────────────────────────────
-        const onTouchStart = (e) => {
-          touchStartX = e.touches[0].clientX;
-          touchDragX = 0;
-          touchHasDragged = false;
-          if (this.autoplayInterval) clearInterval(this.autoplayInterval);
-          this.track.style.transition = 'none';
-        };
-
-        const onTouchMove = (e) => {
-          const dx = e.touches[0].clientX - touchStartX;
-          touchDragX = dx;
-          if (Math.abs(dx) > CLICK_BLOCK_THRESHOLD) touchHasDragged = true;
-          if (e.cancelable) e.preventDefault();
-          const base = (this._getSlideWidth() + this._getGap()) * this.currentIndex;
-          this.track.style.transform = 'translateX(' + (-base + dx) + 'px)';
-        };
-
-        const onTouchEnd = () => {
-          if (touchDragX < -SWIPE_THRESHOLD) this.goToNext();
-          else if (touchDragX > SWIPE_THRESHOLD) this.goToPrev();
-          else this._applyTransform(true);
-          const autoplayEnabled = {{ block.settings.autoplay | default: true }};
-          const autoplaySpeed = {{ block.settings.autoplay_speed | default: 5 }} * 1000;
-          if (autoplayEnabled) this.startAutoplayTimer(autoplaySpeed);
-        };
-
-        // Suppress click if user was dragging
-        this.track.addEventListener('click', (e) => {
-          if (hasDragged || touchHasDragged) {
-            e.preventDefault();
-            e.stopPropagation();
-            hasDragged = false;
-            touchHasDragged = false;
-          }
-        }, true);
-
-        this.track.style.userSelect = 'none';
-        this.track.style.cursor = 'grab';
-        this.track.addEventListener('mousedown', onMouseDown);
-        this.track.addEventListener('touchstart', onTouchStart, { passive: true });
-        this.track.addEventListener('touchmove', onTouchMove, { passive: false });
-        this.track.addEventListener('touchend', onTouchEnd);
-      }
-
-      disconnectedCallback() {
-        if (this.autoplayInterval) {
-          clearInterval(this.autoplayInterval);
-        }
-      }
+      // Recalculate on resize
+      window.addEventListener('resize', this._onResize.bind(this));
     }
 
-    customElements.define('image-carousel-{{ ai_gen_id }}', ImageCarousel{{ ai_gen_id }});
-  })();
+    _onResize() {
+      clearTimeout(this._resizeTimer);
+      this._resizeTimer = setTimeout(() => {
+        this.slidesToShow = this._getSlidesToShow();
+        // Recalculate slide widths
+        const slideW = this._getSlideWidth();
+        const gap    = this.slideGap;
+        const slides = Array.from(this.track.querySelectorAll('.ai-image-carousel-slide-{{ ai_gen_id }}'));
+        slides.forEach(s => {
+          s.style.width    = slideW + 'px';
+          s.style.minWidth = slideW + 'px';
+          s.style.flex     = '0 0 ' + slideW + 'px';
+        });
+        const origCount = {{ block.settings.image_1 != blank ? 1 : 0 }}
+          + {{ block.settings.image_2 != blank ? 1 : 0 }}
+          + {{ block.settings.image_3 != blank ? 1 : 0 }}
+          + {{ block.settings.image_4 != blank ? 1 : 0 }}
+          + {{ block.settings.image_5 != blank ? 1 : 0 }}
+          + {{ block.settings.image_6 != blank ? 1 : 0 }}
+          + {{ block.settings.image_7 != blank ? 1 : 0 }};
+        this.loopWidth = origCount * (slideW + gap);
+        if (this.position > this.loopWidth) this.position = this.position % this.loopWidth;
+      }, 200);
+    }
+
+    _startRaf() {
+      const tick = (timestamp) => {
+        if (!this.isDragging && !this.isPaused) {
+          if (this.lastTime !== null) {
+            const delta = timestamp - this.lastTime;
+            this.position += (this.scrollSpeed * delta) / 1000;
+            // Seamless loop
+            if (this.loopWidth > 0 && this.position >= this.loopWidth) {
+              this.position -= this.loopWidth;
+            }
+            this.track.style.transform = 'translateX(-' + this.position + 'px)';
+          }
+          this.lastTime = timestamp;
+        } else {
+          this.lastTime = null;
+        }
+        this._rafId = requestAnimationFrame(tick);
+      };
+      this._rafId = requestAnimationFrame(tick);
+    }
+
+    _setupHover() {
+      this.addEventListener('mouseenter', () => { this.isPaused = true; });
+      this.addEventListener('mouseleave', () => { this.isPaused = false; });
+    }
+
+    _setupMouseDrag() {
+      let startX     = 0;
+      let startPos   = 0;
+      let dragDelta  = 0;
+
+      const onMove = (e) => {
+        if (e.buttons !== 1) { onUp(); return; }
+        dragDelta = e.clientX - startX;
+        if (Math.abs(dragDelta) > 5) this.hasDragged = true;
+        let newPos = startPos - dragDelta;
+        // Wrap within loopWidth
+        if (this.loopWidth > 0) {
+          newPos = ((newPos % this.loopWidth) + this.loopWidth) % this.loopWidth;
+        }
+        this.position = newPos;
+        this.track.style.transform = 'translateX(-' + this.position + 'px)';
+      };
+
+      const onUp = () => {
+        if (!this.isDragging) return;
+        this.isDragging = false;
+        this.isPaused   = false;
+        this.track.style.cursor = 'grab';
+        window.removeEventListener('mousemove', onMove);
+        window.removeEventListener('mouseup', onUp);
+      };
+
+      const onDown = (e) => {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        startX          = e.clientX;
+        startPos        = this.position;
+        dragDelta       = 0;
+        this.hasDragged = false;
+        this.isDragging = true;
+        this.isPaused   = true;
+        this.track.style.cursor = 'grabbing';
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+      };
+
+      // Block click after drag
+      this.track.addEventListener('click', (e) => {
+        if (this.hasDragged) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.hasDragged = false;
+        }
+      }, true);
+
+      this.track.style.userSelect = 'none';
+      this.track.style.cursor     = 'grab';
+      this.track.addEventListener('mousedown', onDown);
+    }
+
+    _setupTouchSwipe() {
+      let touchStartX  = 0;
+      let touchStartPos = 0;
+      let touchHasDragged = false;
+
+      this.track.addEventListener('touchstart', (e) => {
+        touchStartX      = e.touches[0].clientX;
+        touchStartPos    = this.position;
+        touchHasDragged  = false;
+        this.isPaused    = true;
+      }, { passive: true });
+
+      this.track.addEventListener('touchmove', (e) => {
+        const dx = e.touches[0].clientX - touchStartX;
+        if (Math.abs(dx) > 5) touchHasDragged = true;
+        if (e.cancelable) e.preventDefault();
+        let newPos = touchStartPos - dx;
+        if (this.loopWidth > 0) {
+          newPos = ((newPos % this.loopWidth) + this.loopWidth) % this.loopWidth;
+        }
+        this.position = newPos;
+        this.track.style.transform = 'translateX(-' + this.position + 'px)';
+      }, { passive: false });
+
+      this.track.addEventListener('touchend', () => {
+        this.isPaused = false;
+      });
+
+      this.track.addEventListener('click', (e) => {
+        if (touchHasDragged) {
+          e.preventDefault();
+          e.stopPropagation();
+          touchHasDragged = false;
+        }
+      }, true);
+    }
+
+    disconnectedCallback() {
+      if (this._rafId) cancelAnimationFrame(this._rafId);
+    }
+  }
+
+  customElements.define('image-carousel-{{ ai_gen_id }}', ImageCarousel{{ ai_gen_id }});
+})();
 </script>
 
 {% schema %}
@@ -618,12 +361,27 @@
   "settings": [
     {
       "type": "header",
-      "content": "Cards Display per Row"
+      "content": "Auto Scroll"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "label": "Scroll speed",
+      "min": 20,
+      "max": 300,
+      "step": 10,
+      "unit": "px/s",
+      "default": 80,
+      "info": "Higher = faster scroll"
+    },
+    {
+      "type": "header",
+      "content": "Cards per Row"
     },
     {
       "type": "range",
       "id": "slides_to_show_desktop",
-      "label": "Slides on Desktop",
+      "label": "Cards visible on Desktop",
       "min": 1,
       "max": 6,
       "step": 1,
@@ -632,7 +390,7 @@
     {
       "type": "range",
       "id": "slides_to_show_mobile",
-      "label": "Slides on Mobile",
+      "label": "Cards visible on Mobile",
       "min": 1,
       "max": 3,
       "step": 1,
@@ -641,8 +399,8 @@
     {
       "type": "range",
       "id": "slide_gap",
-      "label": "Gap between slides",
-      "min": 8,
+      "label": "Gap between cards",
+      "min": 4,
       "max": 40,
       "step": 2,
       "unit": "px",
@@ -651,7 +409,7 @@
     {
       "type": "range",
       "id": "slide_border_radius",
-      "label": "Card Border Radius",
+      "label": "Card border radius",
       "min": 0,
       "max": 30,
       "step": 2,
@@ -660,13 +418,37 @@
     },
     {
       "type": "header",
-      "content": "Click Link"
+      "content": "Height"
     },
     {
-      "type": "url",
-      "id": "link_url",
-      "label": "Slide click destination",
-      "info": "Where to go when a slide is clicked (default: /collections/all)"
+      "type": "range",
+      "id": "carousel_height",
+      "label": "Desktop height",
+      "min": 200,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "default": 420
+    },
+    {
+      "type": "range",
+      "id": "carousel_height_mobile",
+      "label": "Mobile height",
+      "min": 100,
+      "max": 500,
+      "step": 20,
+      "unit": "px",
+      "default": 280
+    },
+    {
+      "type": "range",
+      "id": "section_padding",
+      "label": "Section vertical padding",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "unit": "px",
+      "default": 10
     },
     {
       "type": "header",
@@ -709,155 +491,13 @@
     },
     {
       "type": "header",
-      "content": "Layout"
+      "content": "Click Link"
     },
     {
-      "type": "range",
-      "id": "carousel_height",
-      "label": "Desktop height",
-      "min": 200,
-      "max": 800,
-      "step": 20,
-      "unit": "px",
-      "default": 420
-    },
-    {
-      "type": "range",
-      "id": "carousel_height_mobile",
-      "label": "Mobile height",
-      "min": 200,
-      "max": 600,
-      "step": 20,
-      "unit": "px",
-      "default": 320
-    },
-    {
-      "type": "range",
-      "id": "desktop_width_percent",
-      "label": "Desktop width",
-      "min": 50,
-      "max": 100,
-      "step": 5,
-      "unit": "%",
-      "default": 100
-    },
-    {
-      "type": "header",
-      "content": "Autoplay"
-    },
-    {
-      "type": "checkbox",
-      "id": "autoplay",
-      "label": "Enable autoplay",
-      "default": true
-    },
-    {
-      "type": "range",
-      "id": "autoplay_speed",
-      "label": "Autoplay speed",
-      "min": 2,
-      "max": 10,
-      "step": 1,
-      "unit": "s",
-      "default": 5
-    },
-    {
-      "type": "header",
-      "content": "Navigation"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_navigation",
-      "label": "Show navigation arrows",
-      "default": true
-    },
-    {
-      "type": "range",
-      "id": "nav_button_size",
-      "label": "Navigation button size",
-      "min": 30,
-      "max": 60,
-      "step": 5,
-      "unit": "px",
-      "default": 45
-    },
-    {
-      "type": "range",
-      "id": "nav_button_offset",
-      "label": "Navigation button offset",
-      "min": 10,
-      "max": 50,
-      "step": 5,
-      "unit": "px",
-      "default": 15
-    },
-    {
-      "type": "range",
-      "id": "nav_button_opacity",
-      "label": "Navigation button opacity",
-      "min": 30,
-      "max": 100,
-      "step": 10,
-      "unit": "%",
-      "default": 80
-    },
-    {
-      "type": "color",
-      "id": "nav_button_color",
-      "label": "Navigation button color",
-      "default": "#ffffff"
-    },
-    {
-      "type": "color",
-      "id": "nav_button_icon_color",
-      "label": "Navigation icon color",
-      "default": "#000000"
-    },
-    {
-      "type": "header",
-      "content": "Dots"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_dots",
-      "label": "Show dots",
-      "default": true
-    },
-    {
-      "type": "range",
-      "id": "dot_size",
-      "label": "Dot size",
-      "min": 6,
-      "max": 16,
-      "step": 2,
-      "unit": "px",
-      "default": 10
-    },
-    {
-      "type": "range",
-      "id": "dots_offset",
-      "label": "Dots offset from bottom",
-      "min": 10,
-      "max": 50,
-      "step": 5,
-      "unit": "px",
-      "default": 15
-    },
-    {
-      "type": "range",
-      "id": "dot_opacity",
-      "label": "Inactive dot opacity",
-      "min": 20,
-      "max": 80,
-      "step": 10,
-      "unit": "%",
-      "default": 50
-    },
-    {
-      "type": "color",
-      "id": "dot_color",
-      "label": "Dot color",
-      "default": "#ffffff"
+      "type": "url",
+      "id": "link_url",
+      "label": "Slide click destination",
+      "info": "Default: /collections/all"
     }
   ],
   "presets": [
