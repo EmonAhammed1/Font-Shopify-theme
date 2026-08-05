@@ -143,6 +143,76 @@
         "padding-block-end": 96
       }
     },
+    "marquee_banner_hero": {
+      "type": "marquee-banner",
+      "blocks": {
+        "item_1": {
+          "type": "marquee_item",
+          "settings": {
+            "icon": "lightning",
+            "text": "PREMIUM BOULDERING GEAR"
+          }
+        },
+        "item_2": {
+          "type": "marquee_item",
+          "settings": {
+            "icon": "mountain",
+            "text": "DESIGNED FOR THE CLIMB"
+          }
+        },
+        "item_3": {
+          "type": "marquee_item",
+          "settings": {
+            "icon": "leaf",
+            "text": "SUSTAINABLE & DURABLE FABRICS"
+          }
+        },
+        "item_4": {
+          "type": "marquee_item",
+          "settings": {
+            "icon": "rocket",
+            "text": "FREE WORLDWIDE SHIPPING OVER $100"
+          }
+        },
+        "item_5": {
+          "type": "marquee_item",
+          "settings": {
+            "icon": "climber",
+            "text": "TESTED BY PRO CLIMBERS"
+          }
+        },
+        "item_6": {
+          "type": "marquee_item",
+          "settings": {
+            "icon": "tree",
+            "text": "FONT BOULDERWEAR 2026 COLLECTION"
+          }
+        }
+      },
+      "block_order": [
+        "item_1",
+        "item_2",
+        "item_3",
+        "item_4",
+        "item_5",
+        "item_6"
+      ],
+      "settings": {
+        "background_color": "#0f172a",
+        "text_color": "#ffffff",
+        "icon_color": "#38bdf8",
+        "direction": "right_to_left",
+        "speed": 25,
+        "pause_on_hover": true,
+        "font_size": 16,
+        "font_weight": "700",
+        "text_transform": "uppercase",
+        "letter_spacing": 1,
+        "gap": 40,
+        "padding_top": 14,
+        "padding_bottom": 14
+      }
+    },
     "1771178664c557d360": {
       "type": "_blocks",
       "blocks": {
@@ -1582,6 +1652,7 @@
   },
   "order": [
     "hero_p9CmMG",
+    "marquee_banner_hero",
     "1771178664c557d360",
     "section_kx8Tk3",
     "blocks_hVwHn3",
