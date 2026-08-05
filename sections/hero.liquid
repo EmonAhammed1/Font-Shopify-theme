@@ -535,7 +535,124 @@
   </div>
 </div>
 
+<script>
+  (function initHeroTypewriter() {
+    function setupTypewriter() {
+      const heroContent = document.querySelectorAll('.hero__content-wrapper');
+      heroContent.forEach((wrapper) => {
+        // Target Jumbo text headline (e.g. BOULDERWEAR) for letter-by-letter typing animation
+        const jumboLines = wrapper.querySelectorAll('.jumbo-text-line, jumbo-text');
+        jumboLines.forEach((el) => {
+          if (el.dataset.typewriterDone) return;
+          const originalText = el.textContent.trim();
+          if (!originalText) return;
+          el.dataset.typewriterDone = 'true';
+          el.innerHTML = '';
+          const cursor = document.createElement('span');
+          cursor.className = 'typewriter-cursor';
+          cursor.textContent = '|';
+          el.appendChild(cursor);
+
+          let charIdx = 0;
+          const typeChar = () => {
+            if (charIdx < originalText.length) {
+              const charSpan = document.createElement('span');
+              charSpan.className = 'typewriter-char';
+              charSpan.textContent = originalText[charIdx];
+              el.insertBefore(charSpan, cursor);
+              charIdx++;
+              setTimeout(typeChar, 85);
+            } else {
+              setTimeout(() => {
+                cursor.style.opacity = '0';
+              }, 2500);
+            }
+          };
+          setTimeout(typeChar, 350);
+        });
+
+        // Target description paragraph text for word-by-word typing animation
+        const descElements = wrapper.querySelectorAll('.text-block p, .text-block h4, .text-block h5');
+        descElements.forEach((desc) => {
+          if (desc.dataset.typewriterDone) return;
+          const text = desc.textContent.trim();
+          if (!text) return;
+          desc.dataset.typewriterDone = 'true';
+          const words = text.split(/\s+/);
+          desc.innerHTML = '';
+          
+          words.forEach((word, idx) => {
+            const wordSpan = document.createElement('span');
+            wordSpan.className = 'typewriter-word';
+            wordSpan.style.setProperty('--word-index', idx);
+            wordSpan.textContent = word + ' ';
+            desc.appendChild(wordSpan);
+          });
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupTypewriter);
+    } else {
+      setupTypewriter();
+    }
+  })();
+</script>
+
 {% stylesheet %}
+  /* Typewriter Animation Styles */
+  .typewriter-char {
+    display: inline;
+    animation: charAppear 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes charAppear {
+    0% {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .typewriter-cursor {
+    display: inline-block;
+    color: #e63946;
+    font-weight: 300;
+    margin-left: 3px;
+    animation: blinkCursor 0.65s infinite alternate;
+  }
+
+  @keyframes blinkCursor {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  .typewriter-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+    filter: blur(4px);
+    animation: wordTypeReveal 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: calc(1.25s + (var(--word-index) * 0.08s));
+  }
+
+  @keyframes wordTypeReveal {
+    0% {
+      opacity: 0;
+      transform: translateY(12px) scale(0.96);
+      filter: blur(4px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
   .hero-wrapper {
     --hero-height-offset: 0px;
   }
