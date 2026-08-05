@@ -112,7 +112,7 @@
       {% render 'quick-add-modal' %}
     {% endif %}
 
-    {% if template == 'index' %}
+    {% if template.name == 'index' or request.page_type == 'index' or template contains 'index' %}
       {% render 'homepage-product-card-style' %}
     {% endif %}
   </body>
