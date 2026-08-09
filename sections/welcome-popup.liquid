@@ -23,7 +23,7 @@
     </div>
 
     <!-- Promo Code Display Box -->
-    {% if section.settings.promo_code != blank or section.settings.enable_dynamic_code %}
+    {% if section.settings.promo_code != blank %}
       <div class="welcome-popup-code-box">
         <div class="code-details">
           <span class="code-label">PROMO CODE:</span>
@@ -41,11 +41,11 @@
 
     <!-- Newsletter Subscription Form -->
     {% form 'customer', class: 'welcome-popup-form', id: 'WelcomeNewsletterForm' %}
-      <input type="hidden" name="contact[tags]" id="WelcomeCustomerTags-{{ section.id }}" value="newsletter,welcome_popup_10">
+      <input type="hidden" name="contact[tags]" value="newsletter,welcome_popup_10">
       
       {% if form.posted_successfully? %}
         <div class="popup-form-success">
-          🎉 Thank you for subscribing! Your exclusive promo code is <strong id="SuccessPromoCode-{{ section.id }}">{{ section.settings.promo_code }}</strong> for 10% off!
+          🎉 Thank you for subscribing! Use promo code <strong>{{ section.settings.promo_code }}</strong> at checkout for 10% off!
         </div>
       {% else %}
         {% if form.errors %}
@@ -416,35 +416,11 @@
     const copyText = document.getElementById('CopyBtnText-' + sectionId);
     const promoCode = document.getElementById('WelcomePromoCode-' + sectionId);
     const form = document.getElementById('WelcomeNewsletterForm');
-    const tagsInput = document.getElementById('WelcomeCustomerTags-' + sectionId);
-    const successMsgCode = document.getElementById('SuccessPromoCode-' + sectionId);
 
     const initialDelay = ({{ section.settings.initial_delay | default: 4 }}) * 1000;
     const recurringDelay = ({{ section.settings.recurring_delay | default: 40 }}) * 1000;
-    const enableDynamicCode = {{ section.settings.enable_dynamic_code | json }};
-    const codePrefix = '{{ section.settings.code_prefix | default: "WELCOME" }}';
 
     let recurringIntervalId = null;
-
-    function getOrGenerateUniqueCode() {
-      if (!enableDynamicCode) return '{{ section.settings.promo_code }}';
-      let code = localStorage.getItem('welcome_user_unique_code');
-      if (!code) {
-        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-        let randomPart = '';
-        for (let i = 0; i < 6; i++) {
-          randomPart += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        code = codePrefix.toUpperCase().trim() + '-' + randomPart;
-        localStorage.setItem('welcome_user_unique_code', code);
-      }
-      return code;
-    }
-
-    const currentUniqueCode = getOrGenerateUniqueCode();
-    if (promoCode) promoCode.textContent = currentUniqueCode;
-    if (successMsgCode) successMsgCode.textContent = currentUniqueCode;
-    if (tagsInput) tagsInput.value = 'newsletter,welcome_popup_10,welcome_code_' + currentUniqueCode;
 
     function isNeverShow() {
       return localStorage.getItem('welcome_popup_never_show') === 'true';
@@ -539,19 +515,6 @@
       "default": true
     },
     {
-      "type": "checkbox",
-      "id": "enable_dynamic_code",
-      "label": "Generate Unique Code Per Subscriber",
-      "default": true,
-      "info": "Automatically generates a unique personal discount code (e.g. WELCOME-7K4P9X) for each subscriber"
-    },
-    {
-      "type": "text",
-      "id": "code_prefix",
-      "label": "Unique Code Prefix",
-      "default": "WELCOME"
-    },
-    {
       "type": "number",
       "id": "initial_delay",
       "label": "Initial delay before popup appears (Seconds)",
@@ -584,7 +547,7 @@
     {
       "type": "text",
       "id": "promo_code",
-      "label": "Fallback Promo Code",
+      "label": "Promo Code",
       "default": "WELCOME10"
     }
   ],
