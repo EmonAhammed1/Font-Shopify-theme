@@ -39,8 +39,11 @@
       </div>
     {% endif %}
 
+    <!-- Hidden iframe to capture form submission and prevent hCaptcha / page redirect -->
+    <iframe name="welcome_popup_hidden_iframe" id="WelcomePopupHiddenIframe-{{ section.id }}" style="display:none !important; width:0; height:0; border:0; opacity:0; pointer-events:none;" aria-hidden="true"></iframe>
+
     <!-- Newsletter Subscription Form -->
-    {% form 'customer', class: 'welcome-popup-form', id: 'WelcomeNewsletterForm' %}
+    {% form 'customer', class: 'welcome-popup-form', id: 'WelcomeNewsletterForm', target: 'welcome_popup_hidden_iframe' %}
       <input type="hidden" name="contact[tags]" value="newsletter,welcome_popup_10">
       
       {% if form.posted_successfully? %}
@@ -484,8 +487,7 @@
     }
 
     if (form) {
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
+      form.addEventListener('submit', function () {
         setNeverShow();
 
         const submitBtn = form.querySelector('.popup-submit-btn');
@@ -494,29 +496,12 @@
           submitBtn.innerHTML = '<span>SUBSCRIBING...</span>';
         }
 
-        const formData = new FormData(form);
-
-        fetch('/contact#contact_form', {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-          }
-        })
-        .then(function () {
-          showSuccess();
-        })
-        .catch(function (err) {
-          console.error('Subscription error:', err);
-          showSuccess();
-        });
-
-        function showSuccess() {
+        setTimeout(function () {
           form.innerHTML = '<div class="popup-form-success">🎉 Thank you for subscribing! Use promo code <strong>' + ('{{ section.settings.promo_code }}' || 'WELCOME10') + '</strong> at checkout for 10% off!</div>';
           setTimeout(function () {
             closePopup();
-          }, 3500);
-        }
+          }, 3000);
+        }, 600);
       });
     }
 
