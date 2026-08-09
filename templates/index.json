@@ -215,13 +215,6 @@
             "carousel_height": 420,
             "carousel_height_mobile": 280,
             "section_padding": 10,
-            "image_1": "shopify://shop_images/sol_indoors_trs_and_hoody.jpg",
-            "image_2": "shopify://shop_images/sol_mustard.jpg",
-            "image_3": "shopify://shop_images/Carousel_no_4_pic.png",
-            "image_4": "shopify://shop_images/Sol_Grey_Tshirt_Front_8a7fd8df-0a70-44f8-a37f-4587498bf15f.jpg",
-            "image_5": "shopify://shop_images/Sol_action_indoors.jpg",
-            "image_6": "shopify://shop_images/outdoors_good_bum_shot_910986ad-f86a-4453-8b37-59e854692496.jpg",
-            "image_7": "shopify://shop_images/Sol_Green_Tshirt_Back_2.jpg",
             "link_url": ""
           },
           "blocks": {}
@@ -1188,7 +1181,7 @@
             "discount_text_color": "#000000",
             "discount_border_color": "#ffd700",
             "button_text": "Explore Collection →",
-            "button_link": "",
+            "button_link": "shopify://collections/all",
             "button_font_size": 16,
             "button_padding_vertical": 14,
             "button_padding_horizontal": 32,
