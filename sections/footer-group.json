@@ -15,7 +15,7 @@
       "type": "welcome-popup",
       "settings": {
         "enable_popup": true,
-        "initial_delay": 4,
+        "initial_delay": 1,
         "recurring_delay": 40,
         "discount_badge": "SPECIAL OFFER — GET 10% OFF",
         "heading": "Welcome to FONT Boulderwear",
