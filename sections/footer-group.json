@@ -11,6 +11,18 @@
   "type": "footer",
   "name": "Footer",
   "sections": {
+    "welcome_popup_sec": {
+      "type": "welcome-popup",
+      "settings": {
+        "enable_popup": true,
+        "initial_delay": 4,
+        "recurring_delay": 40,
+        "discount_badge": "SPECIAL OFFER — GET 10% OFF",
+        "heading": "Welcome to FONT Boulderwear",
+        "subtitle": "Join our bouldering community! Subscribe to our newsletter to receive 10% OFF your order plus exclusive access to new releases.",
+        "promo_code": "WELCOME10"
+      }
+    },
     "section_jehhzd": {
       "type": "section",
       "blocks": {
@@ -197,7 +209,7 @@
                     "vertical_alignment": "center",
                     "align_baseline": false,
                     "horizontal_alignment_flex_direction_column": "flex-start",
-                    "vertical_alignment_flex_direction_column": "center",
+                    "vertical_alignment_flex_direction_column": "flex-start",
                     "gap": 12,
                     "width": "fill",
                     "custom_width": 100,
@@ -293,43 +305,13 @@
                         "padding-inline-end": 0
                       },
                       "blocks": {
-                        "button_zt3Tci": {
-                          "type": "button",
-                          "name": "t:names.button",
-                          "settings": {
-                            "label": "Facebook",
-                            "link": "",
-                            "open_in_new_tab": false,
-                            "style_class": "link",
-                            "width": "fit-content",
-                            "custom_width": 100,
-                            "width_mobile": "fit-content",
-                            "custom_width_mobile": 100
-                          },
-                          "blocks": {}
-                        },
                         "button_jrJ8Df": {
                           "type": "button",
                           "name": "t:names.button",
                           "settings": {
                             "label": "Instagram",
-                            "link": "",
-                            "open_in_new_tab": false,
-                            "style_class": "link",
-                            "width": "fit-content",
-                            "custom_width": 100,
-                            "width_mobile": "fit-content",
-                            "custom_width_mobile": 100
-                          },
-                          "blocks": {}
-                        },
-                        "button_aCLARA": {
-                          "type": "button",
-                          "name": "t:names.button",
-                          "settings": {
-                            "label": "TikTok",
-                            "link": "",
-                            "open_in_new_tab": false,
+                            "link": "https://www.instagram.com/font.boulderwear?igsh=MWdtcHBpOHI3b2JjdA==",
+                            "open_in_new_tab": true,
                             "style_class": "link",
                             "width": "fit-content",
                             "custom_width": 100,
@@ -340,9 +322,7 @@
                         }
                       },
                       "block_order": [
-                        "button_zt3Tci",
-                        "button_jrJ8Df",
-                        "button_aCLARA"
+                        "button_jrJ8Df"
                       ]
                     }
                   },
@@ -546,18 +526,6 @@
         "color_scheme": "scheme-red",
         "padding-block-start": 12,
         "padding-block-end": 0
-      }
-    },
-    "welcome_popup_sec": {
-      "type": "welcome-popup",
-      "settings": {
-        "enable_popup": true,
-        "initial_delay": 4,
-        "recurring_delay": 40,
-        "discount_badge": "SPECIAL OFFER — GET 10% OFF",
-        "heading": "Welcome to FONT Boulderwear",
-        "subtitle": "Join our bouldering community! Subscribe to our newsletter to receive 10% OFF your order plus exclusive access to new releases.",
-        "promo_code": "WELCOME10"
       }
     }
   },
