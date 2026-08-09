@@ -624,10 +624,10 @@
       "
       style="
         {% render 'layout-panel-style', settings: section.settings %}
-        --content-pad-top-desktop: {{ section.settings.content_padding_top_desktop | default: 80 }}px;
-        --content-pad-bottom-desktop: {{ section.settings.content_padding_bottom_desktop | default: 80 }}px;
-        --content-pad-top-mobile: {{ section.settings.content_padding_top_mobile | default: 60 }}px;
-        --content-pad-bottom-mobile: {{ section.settings.content_padding_bottom_mobile | default: 60 }}px;
+        {% if section.settings.content_padding_top_desktop != blank %}--content-pad-top-desktop: {{ section.settings.content_padding_top_desktop }}px;{% endif %}
+        {% if section.settings.content_padding_bottom_desktop != blank %}--content-pad-bottom-desktop: {{ section.settings.content_padding_bottom_desktop }}px;{% endif %}
+        {% if section.settings.content_padding_top_mobile != blank %}--content-pad-top-mobile: {{ section.settings.content_padding_top_mobile }}px;{% endif %}
+        {% if section.settings.content_padding_bottom_mobile != blank %}--content-pad-bottom-mobile: {{ section.settings.content_padding_bottom_mobile }}px;{% endif %}
       "
     >
       {% content_for 'blocks' %}
@@ -846,6 +846,7 @@
     width: 100% !important;
     max-width: 100% !important;
     margin-inline: auto !important;
+    margin-top: 0 !important;
   }
 
   .hero .jumbo-text-line,
@@ -973,7 +974,7 @@
     position: relative;
     inset: 0;
     z-index: var(--layer-flat);
-    padding: 3rem 2rem;
+    padding-inline: 2rem;
     background: transparent;
     border: none;
     border-radius: 0;
@@ -986,14 +987,14 @@
     justify-content: center;
     text-align: center;
     width: 100%;
-    padding-top: var(--content-pad-top-desktop, 80px) !important;
-    padding-bottom: var(--content-pad-bottom-desktop, 80px) !important;
+    padding-top: var(--content-pad-top-desktop, 0px) !important;
+    padding-bottom: var(--content-pad-bottom-desktop, 0px) !important;
   }
 
   @media screen and (max-width: 749px) {
     .hero__content-wrapper {
-      padding-top: var(--content-pad-top-mobile, 60px) !important;
-      padding-bottom: var(--content-pad-bottom-mobile, 60px) !important;
+      padding-top: var(--content-pad-top-mobile, 0px) !important;
+      padding-bottom: var(--content-pad-bottom-mobile, 0px) !important;
     }
   }
 
