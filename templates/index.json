@@ -71,7 +71,7 @@
               "type": "text",
               "name": "t:names.text",
               "settings": {
-                "text": "<h4>Its what Boulderers wear.  FONT Boulderwear brings you clothes that are great to wear and even better to boulder in.</h4><p></p>",
+                "text": "<h4>It's what Boulderers wear. FONT Boulderwear brings you clothes that are great to wear and even better to boulder in.</h4><p></p>",
                 "width": "fit-content",
                 "max_width": "narrow",
                 "alignment": "center",
@@ -79,7 +79,7 @@
                 "font": "var(--font-body--family)",
                 "font_size": "1.5rem",
                 "line_height": "normal",
-                "letter_spacing": "normal",
+                "letter_spacing": "tight",
                 "case": "none",
                 "wrap": "pretty",
                 "color": "",
@@ -161,7 +161,7 @@
           "type": "marquee_item",
           "settings": {
             "icon": "mountain",
-            "text": "DESIGNED FOR THE CLIMB"
+            "text": "DESIGNED FOR THE CLIMB BOULDER"
           }
         },
         "item_3": {
@@ -169,20 +169,6 @@
           "settings": {
             "icon": "leaf",
             "text": "SUSTAINABLE & DURABLE FABRICS"
-          }
-        },
-        "item_4": {
-          "type": "marquee_item",
-          "settings": {
-            "icon": "rocket",
-            "text": "EXPRESS GLOBAL SHIPPING"
-          }
-        },
-        "item_5": {
-          "type": "marquee_item",
-          "settings": {
-            "icon": "climber",
-            "text": "TESTED BY PRO CLIMBERS"
           }
         },
         "item_6": {
@@ -197,8 +183,6 @@
         "item_1",
         "item_2",
         "item_3",
-        "item_4",
-        "item_5",
         "item_6"
       ],
       "settings": {
