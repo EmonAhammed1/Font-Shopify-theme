@@ -140,7 +140,11 @@
         "blurred_reflection": false,
         "reflection_opacity": 75,
         "padding-block-start": 18,
-        "padding-block-end": 96
+        "padding-block-end": 96,
+        "content_padding_top_desktop": 40,
+        "content_padding_bottom_desktop": 80,
+        "content_padding_top_mobile": 30,
+        "content_padding_bottom_mobile": 60
       }
     },
     "marquee_banner_hero": {

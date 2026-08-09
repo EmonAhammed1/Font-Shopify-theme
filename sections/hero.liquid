@@ -622,7 +622,13 @@
         {{section.settings.section_width}}
         {% if request.design_mode %}hero__content-wrapper--design-mode{% endif %}
       "
-      style="{% render 'layout-panel-style', settings: section.settings %}"
+      style="
+        {% render 'layout-panel-style', settings: section.settings %}
+        --content-pad-top-desktop: {{ section.settings.content_padding_top_desktop | default: 80 }}px;
+        --content-pad-bottom-desktop: {{ section.settings.content_padding_bottom_desktop | default: 80 }}px;
+        --content-pad-top-mobile: {{ section.settings.content_padding_top_mobile | default: 60 }}px;
+        --content-pad-bottom-mobile: {{ section.settings.content_padding_bottom_mobile | default: 60 }}px;
+      "
     >
       {% content_for 'blocks' %}
     </div>
@@ -980,6 +986,15 @@
     justify-content: center;
     text-align: center;
     width: 100%;
+    padding-top: var(--content-pad-top-desktop, 80px) !important;
+    padding-bottom: var(--content-pad-bottom-desktop, 80px) !important;
+  }
+
+  @media screen and (max-width: 749px) {
+    .hero__content-wrapper {
+      padding-top: var(--content-pad-top-mobile, 60px) !important;
+      padding-bottom: var(--content-pad-bottom-mobile, 60px) !important;
+    }
   }
 
   .hero .group-block-content,
@@ -1879,6 +1894,50 @@
       "step": 1,
       "unit": "px",
       "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Hero Content Vertical Padding"
+    },
+    {
+      "type": "range",
+      "id": "content_padding_top_desktop",
+      "label": "Content Top Padding (Desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "content_padding_bottom_desktop",
+      "label": "Content Bottom Padding (Desktop)",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "content_padding_top_mobile",
+      "label": "Content Top Padding (Mobile)",
+      "min": 0,
+      "max": 150,
+      "step": 2,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "content_padding_bottom_mobile",
+      "label": "Content Bottom Padding (Mobile)",
+      "min": 0,
+      "max": 150,
+      "step": 2,
+      "unit": "px",
+      "default": 60
     }
   ],
   "presets": [
