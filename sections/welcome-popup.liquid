@@ -491,13 +491,38 @@
     }
 
     if (form) {
-      form.addEventListener('submit', function () {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
         setNeverShow();
 
         const submitBtn = form.querySelector('.popup-submit-btn');
         if (submitBtn) {
           submitBtn.disabled = true;
           submitBtn.innerHTML = '<span>SUBSCRIBING...</span>';
+        }
+
+        const formData = new FormData(form);
+
+        fetch('/contact#contact_form', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(function () {
+          showSuccess();
+        })
+        .catch(function (err) {
+          console.error('Newsletter fetch error:', err);
+          showSuccess();
+        });
+
+        function showSuccess() {
+          form.innerHTML = '<div class="popup-form-success">🎉 Thank you for subscribing! Use promo code <strong>' + ('{{ section.settings.promo_code }}' || 'WELCOME10') + '</strong> at checkout for 10% off!</div>';
+          setTimeout(function () {
+            closePopup();
+          }, 3000);
         }
       });
     }
