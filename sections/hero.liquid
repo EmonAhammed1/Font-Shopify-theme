@@ -657,18 +657,8 @@
             frag.appendChild(charSpan);
           });
 
-          const cursor = document.createElement('span');
-          cursor.className = 'typewriter-cursor';
-          cursor.textContent = '|';
-          frag.appendChild(cursor);
-
           line.innerHTML = '';
           line.appendChild(frag);
-
-          // Hide cursor after typing finishes
-          setTimeout(() => {
-            cursor.style.opacity = '0';
-          }, 3500);
         });
 
         // Target description paragraph text for word-by-word typing animation
@@ -888,18 +878,7 @@
   }
 
   .typewriter-cursor {
-    display: inline-block;
-    color: #e63946;
-    font-weight: 300;
-    margin-left: 2px;
-    opacity: 1;
-    transition: opacity 0.5s ease;
-    animation: blinkCursor 0.65s infinite alternate;
-  }
-
-  @keyframes blinkCursor {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
+    display: none !important;
   }
 
   .typewriter-word {
