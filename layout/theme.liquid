@@ -653,6 +653,30 @@
           });
         });
       })();
+
+      (function initSearchModalTrigger() {
+        document.addEventListener('click', function (e) {
+          const searchBtn = e.target.closest('.search-modal__button, .search-action button, [aria-label*="Search"], [aria-label*="search"]');
+          if (searchBtn) {
+            const searchModal = document.getElementById('search-modal');
+            if (searchModal) {
+              e.preventDefault();
+              if (typeof searchModal.showDialog === 'function') {
+                searchModal.showDialog();
+              } else {
+                const dialog = searchModal.querySelector('dialog');
+                if (dialog) {
+                  if (typeof dialog.showModal === 'function') {
+                    try { dialog.showModal(); } catch (err) { dialog.setAttribute('open', 'true'); }
+                  } else {
+                    dialog.setAttribute('open', 'true');
+                  }
+                }
+              }
+            }
+          }
+        });
+      })();
     </script>
   </body>
 </html>
