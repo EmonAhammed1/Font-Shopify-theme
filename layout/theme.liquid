@@ -134,6 +134,20 @@
         align-items: center !important;
       }
 
+      /* Initial Header Transparency on Mobile & Desktop (Solid Background appears on scroll) */
+      .header[transparent]:not([data-scrolled="true"]):not(.is-scrolled),
+      .header[transparent]:not([data-scrolled="true"]):not(.is-scrolled) .header__row {
+        --header-bg-color: transparent !important;
+        background-color: transparent !important;
+        background: transparent !important;
+      }
+
+      .header[transparent][data-scrolled="true"] .header__row,
+      .header[transparent].is-scrolled .header__row {
+        background-color: var(--color-background) !important;
+        transition: background-color 0.3s ease, color 0.3s ease !important;
+      }
+
       /* Fontainebleau hero text section line spacing & reveal animation */
       [id*="hero_pjNAy4"] h4,
       [id*="hero_pjNAy4"] .text-block,
@@ -676,6 +690,24 @@
             }
           }
         });
+      })();
+
+      (function initHeaderTransparentScrollState() {
+        function checkHeaderScroll() {
+          const header = document.querySelector('.header[transparent], #header-component[transparent]');
+          if (!header) return;
+          if (window.scrollY > 15) {
+            header.classList.add('is-scrolled');
+            header.setAttribute('data-scrolled', 'true');
+          } else {
+            header.classList.remove('is-scrolled');
+            header.removeAttribute('data-scrolled');
+          }
+        }
+
+        window.addEventListener('scroll', checkHeaderScroll, { passive: true });
+        window.addEventListener('DOMContentLoaded', checkHeaderScroll);
+        checkHeaderScroll();
       })();
     </script>
   </body>
