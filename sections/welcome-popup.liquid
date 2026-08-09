@@ -463,11 +463,18 @@
       }
     }
 
-    if (window.location.href.indexOf('customer_posted=true') !== -1 || (form && form.querySelector('.popup-form-success'))) {
-      setNeverShow();
-    }
+    const isPostedSuccess = window.location.href.indexOf('customer_posted=true') !== -1 || (form && form.querySelector('.popup-form-success') !== null);
 
-    if (!isNeverShow()) {
+    if (isPostedSuccess) {
+      setNeverShow();
+      popup.classList.add('is-visible');
+      popup.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+
+      setTimeout(function () {
+        closePopup();
+      }, 4000);
+    } else if (!isNeverShow()) {
       setTimeout(openPopup, initialDelay);
     }
 
@@ -484,34 +491,13 @@
     }
 
     if (form) {
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
+      form.addEventListener('submit', function () {
         setNeverShow();
 
         const submitBtn = form.querySelector('.popup-submit-btn');
         if (submitBtn) {
           submitBtn.disabled = true;
           submitBtn.innerHTML = '<span>SUBSCRIBING...</span>';
-        }
-
-        const formData = new FormData(form);
-
-        fetch(form.action || '/contact#contact_form', {
-          method: 'POST',
-          body: formData
-        })
-        .then(function () {
-          showSuccess();
-        })
-        .catch(function () {
-          showSuccess();
-        });
-
-        function showSuccess() {
-          form.innerHTML = '<div class="popup-form-success">🎉 Thank you for subscribing! Use promo code <strong>' + ('{{ section.settings.promo_code }}' || 'WELCOME10') + '</strong> at checkout for 10% off!</div>';
-          setTimeout(function () {
-            closePopup();
-          }, 3000);
         }
       });
     }
