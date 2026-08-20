@@ -69,17 +69,40 @@ class PredictiveSearchComponent extends Component {
    */
   #handleModalClick = (event) => {
     const target = /** @type {HTMLElement} */ (event.target);
+    const viewAllBtn = target.closest('.predictive-search__search-button, [ref="viewAllButton"]');
+    if (viewAllBtn) {
+      const url = viewAllBtn.getAttribute('href') || '/collections/all';
+      window.location.href = url;
+      return;
+    }
+
+    const card = target.closest('.resource-card, .predictive-search-results__card, [data-resource-type]');
+    if (card) {
+      const link = card.querySelector('a.resource-card__link, a') || card.closest('a');
+      if (link && link.href && !event.defaultPrevented) {
+        window.location.href = link.href;
+        return;
+      }
+    }
+
     const isInteractiveElement =
       target instanceof HTMLButtonElement ||
       target instanceof HTMLAnchorElement ||
       target instanceof HTMLInputElement ||
       target.closest('button') ||
       target.closest('a') ||
-      target.closest('input');
+      target.closest('input') ||
+      target.closest('.resource-card') ||
+      target.closest('.predictive-search-results__card') ||
+      target.closest('.predictive-search__search-button');
 
     if (!isInteractiveElement && this.refs.searchInput) {
       this.refs.searchInput.focus();
     }
+  };
+
+  handleModalClick = (event) => {
+    this.#handleModalClick(event);
   };
 
   disconnectedCallback() {

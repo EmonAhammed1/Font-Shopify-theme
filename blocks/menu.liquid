@@ -9,9 +9,15 @@
   if show_as_accordion == true and block_settings.accordion_dividers == true
     assign dividers_enabled = true
   endif
+
+  if menu.links != blank
+    assign menu_links = menu.links
+  elsif linklists[menu].links != blank
+    assign menu_links = linklists[menu].links
+  endif
 %}
 
-{% if menu != blank or heading != blank %}
+{% if menu_links != blank or heading != blank or menu != blank %}
   <accordion-custom
     class="
       menu
@@ -55,9 +61,9 @@
       </summary>
 
       <div class="details-content">
-        {% if menu %}
+        {% if menu_links != blank %}
           <ul class="list-unstyled">
-            {% for link in menu.links %}
+            {% for link in menu_links %}
               <li class="menu__item {{ block_settings.link_preset }}">
                 <a href="{{ link.url }}">
                   {{ link.title }}

@@ -24,6 +24,11 @@
     for option in results.sort_options
       if option.value == sort_by
         assign status = option.name
+        if option.value == 'price-descending'
+          assign status = 'High to Low'
+        elsif option.value == 'price-ascending'
+          assign status = 'Low to High'
+        endif
       endif
     endfor
   %}
@@ -45,13 +50,21 @@
         {% endif %}
       >
         {% for option in results.sort_options %}
+          {% liquid
+            assign option_label = option.name
+            if option.value == 'price-descending'
+              assign option_label = 'High to Low'
+            elsif option.value == 'price-ascending'
+              assign option_label = 'Low to High'
+            endif
+          %}
           <option
             value="{{ option.value }}"
             {% if option.value == sort_by %}
               selected
             {% endif %}
           >
-            {{ option.name }}
+            {{ option_label }}
           </option>
         {% endfor %}
       </select>
@@ -113,6 +126,14 @@
       >
         <div class="sorting-filter__options-inner">
           {% for option in results.sort_options %}
+            {% liquid
+              assign option_label = option.name
+              if option.value == 'price-descending'
+                assign option_label = 'High to Low'
+              elsif option.value == 'price-ascending'
+                assign option_label = 'Low to High'
+              endif
+            %}
             <label
               for="sort-option-{{ option.value }}-{{ section_id }}"
             >
@@ -131,7 +152,7 @@
                   {% endif %}
                   value="{{ option.value }}"
                   class="sorting-filter__input"
-                  data-option-name="{{ option.name }}"
+                  data-option-name="{{ option_label }}"
                   {% if option.value == sort_by %}
                     checked
                   {% endif %}
@@ -140,7 +161,7 @@
                 <span class="svg-wrapper icon-checkmark sorting-filter__checkmark">
                   {{- 'icon-checkmark.svg' | inline_asset_content -}}
                 </span>
-                <span class="sorting-filter__label">{{ option.name }}</span>
+                <span class="sorting-filter__label">{{ option_label }}</span>
               </div>
             </label>
           {% endfor %}

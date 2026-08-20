@@ -32,6 +32,13 @@ class FacetsFormComponent extends Component {
     if (newParameters.get('filter.v.price.gte') === '') newParameters.delete('filter.v.price.gte');
     if (newParameters.get('filter.v.price.lte') === '') newParameters.delete('filter.v.price.lte');
 
+    const sortValues = newParameters.getAll('sort_by');
+    if (sortValues.length > 1) {
+      const activeSort = sortValues.find((val) => val === 'price-descending' || val === 'price-ascending') || sortValues[sortValues.length - 1];
+      newParameters.delete('sort_by');
+      if (activeSort) newParameters.set('sort_by', activeSort);
+    }
+
     newParameters.delete('page');
 
     const searchQuery = this.#getSearchQuery();
@@ -292,6 +299,58 @@ class PriceFacetComponent extends Component {
     if (!(statusComponent instanceof FacetStatusComponent)) return;
 
     statusComponent?.updatePriceSummary(minInput, maxInput);
+  }
+
+  /**
+   * Handles price sort checkbox change (High to Low / Low to High)
+   * @param {Event} event - The change event
+   */
+  handlePriceSortChange(event) {
+    if (!(event.target instanceof HTMLInputElement)) return;
+    const targetCheckbox = event.target;
+    const isChecked = targetCheckbox.checked;
+    const sortValue = targetCheckbox.value;
+
+    const allPriceSortCheckboxes = document.querySelectorAll('.price-facet__sort-checkbox');
+    allPriceSortCheckboxes.forEach((cb) => {
+      if (cb instanceof HTMLInputElement && cb !== targetCheckbox) {
+        cb.checked = false;
+      }
+    });
+
+    const facetsForm = this.closest('facets-form-component');
+    if (!(facetsForm instanceof FacetsFormComponent)) return;
+
+    const form = this.closest('form');
+    const defaultSortBy = this.closest('details')?.getAttribute('data-default-sort-by') || '';
+    const newSortBy = isChecked ? sortValue : defaultSortBy;
+
+    // Sync any external sort_by radio inputs in the form
+    const otherSortInputs = form?.querySelectorAll('input[name="sort_by"]:not(.price-facet__sort-checkbox)');
+    if (otherSortInputs) {
+      otherSortInputs.forEach((input) => {
+        if (input instanceof HTMLInputElement) {
+          input.checked = input.value === newSortBy;
+        }
+      });
+    }
+
+    const sortSelects = form?.querySelectorAll('select[name="sort_by"]');
+    if (sortSelects) {
+      sortSelects.forEach((select) => {
+        if (select instanceof HTMLSelectElement) {
+          select.value = newSortBy;
+        }
+      });
+    }
+
+    if (!isChecked) {
+      targetCheckbox.disabled = true;
+    }
+
+    facetsForm.updateFilters();
+
+    targetCheckbox.disabled = false;
   }
 }
 

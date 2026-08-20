@@ -117,12 +117,14 @@
           </div>
 
           <div class="predictive-search-form__footer">
-            <button
+            <a
+              href="{{ routes.all_products_collection_url }}"
               class="button button-primary predictive-search__search-button"
               ref="viewAllButton"
+              onclick="window.location.href='{{ routes.all_products_collection_url }}';"
             >
               {{ 'content.search_results_view_all' | t }}
-            </button>
+            </a>
           </div>
         </div>
       </form>

@@ -4,6 +4,9 @@
   @param {object} filter - The filter object to render.
   @param {string} filter_style - The filter style, can be 'horizontal' or 'vertical'.
   @param {boolean} [should_render_clear] - Whether to render the clear button.
+  @param {string} [sort_by] - Current sort_by value.
+  @param {string} [section_id] - The section ID.
+  @param {boolean} [in_drawer] - Whether in drawer.
 
   @example
   {% render 'price-filter', filter: filter, filter_style: 'vertical' %}
@@ -42,19 +45,22 @@
           data-currency="{{ localization.country.currency.iso_code }}"
           data-range-max="{{ filter.range_max }}"
         >
-          {%- if filter.min_value.value != null or filter.max_value.value != null %}
-            {%- if filter.min_value.value != null and filter.max_value.value != null %}
+          {%- if filter.min_value.value != null or filter.max_value.value != null -%}
+            {%- if filter.min_value.value != null and filter.max_value.value != null -%}
               {{- filter.min_value.value | money | strip_html -}}
               –
               {{- filter.max_value.value | money | strip_html -}}
             {%- elsif filter.min_value.value != null -%}
               {{ filter.min_value.value | money | strip_html }}–{{ filter.range_max | money | strip_html }}
-
             {%- elsif filter.max_value.value != null -%}
               {{- 0 | money | strip_html -}}
               –
               {{- filter.max_value.value | money | strip_html -}}
             {%- endif -%}
+          {%- elsif sort_by == 'price-descending' -%}
+            High to Low
+          {%- elsif sort_by == 'price-ascending' -%}
+            Low to High
           {%- endif -%}
         </span>
       </facet-status-component>
@@ -73,7 +79,7 @@
 
       <price-facet-component
         class="price-facet"
-        id="facet-inputs-{{ filter.param_name | escape | replace: '.', '-' }}"
+        id="facet-inputs-{{ filter.param_name | escape | replace: '.', '-' }}{% if in_drawer %}-drawer{% endif %}"
         on:change="/updatePriceFilterAndResults"
       >
         <div class="price-facet__inputs-wrapper facets__inputs-wrapper facets__inputs-wrapper--row">
@@ -81,7 +87,7 @@
             <input
               class="field__input price-facet__input"
               name="{{ filter.min_value.param_name }}"
-              id="{{ filter.label | escape }}-GTE"
+              id="{{ filter.label | escape }}-GTE{% if in_drawer %}-drawer{% endif %}"
               {%- if filter.min_value.value -%}
                 value="{{ filter.min_value.value | money_without_currency }}"
               {%- endif -%}
@@ -95,7 +101,7 @@
             >
             <label
               class="field__label price-facet__label"
-              for="{{ filter.label | escape }}-GTE"
+              for="{{ filter.label | escape }}-GTE{% if in_drawer %}-drawer{% endif %}"
             >
               {{ cart.currency.symbol }}
             </label>
@@ -107,7 +113,7 @@
             <input
               class="field__input price-facet__input"
               name="{{ filter.max_value.param_name }}"
-              id="{{ filter.label | escape }}-LTE"
+              id="{{ filter.label | escape }}-LTE{% if in_drawer %}-drawer{% endif %}"
               {%- if filter.max_value.value -%}
                 value="{{ filter.max_value.value | money_without_currency }}"
               {%- endif -%}
@@ -121,19 +127,71 @@
             >
             <label
               class="field__label price-facet__label"
-              for="{{ filter.label | escape }}-LTE"
+              for="{{ filter.label | escape }}-LTE{% if in_drawer %}-drawer{% endif %}"
             >
               {{ cart.currency.symbol }}
             </label>
           </div>
         </div>
 
-        <div class="price-facet__highest-price">
-          {%- assign formatted_highest_price = filter.range_max | money -%}
-          {{ 'content.price_filter_html' | t: price: formatted_highest_price }}
+        <div class="price-facet__hint">
+          Set price range or sort below:
         </div>
 
-        {% if filter.min_value.value != null or filter.max_value.value != null %}
+        <div class="price-facet__sort-options">
+          <ul class="facets__inputs-list list-unstyled" role="list">
+            <li class="facets__inputs-list-item">
+              <div class="checkbox">
+                <input
+                  type="checkbox"
+                  name="sort_by"
+                  value="price-descending"
+                  id="Price-Sort-High-To-Low-{{ section_id | default: 'main' }}-{{ filter_style }}{% if in_drawer %}-drawer{% endif %}"
+                  class="checkbox__input price-facet__sort-checkbox"
+                  {% if sort_by == 'price-descending' %}
+                    checked
+                  {% endif %}
+                  data-sort-value="price-descending"
+                  on:change="/handlePriceSortChange"
+                >
+                <label
+                  class="checkbox__label"
+                  for="Price-Sort-High-To-Low-{{ section_id | default: 'main' }}-{{ filter_style }}{% if in_drawer %}-drawer{% endif %}"
+                  role="checkbox"
+                >
+                  {{ 'icon-checkmark.svg' | inline_asset_content }}
+                  <span class="checkbox__label-text">High to Low</span>
+                </label>
+              </div>
+            </li>
+            <li class="facets__inputs-list-item">
+              <div class="checkbox">
+                <input
+                  type="checkbox"
+                  name="sort_by"
+                  value="price-ascending"
+                  id="Price-Sort-Low-To-High-{{ section_id | default: 'main' }}-{{ filter_style }}{% if in_drawer %}-drawer{% endif %}"
+                  class="checkbox__input price-facet__sort-checkbox"
+                  {% if sort_by == 'price-ascending' %}
+                    checked
+                  {% endif %}
+                  data-sort-value="price-ascending"
+                  on:change="/handlePriceSortChange"
+                >
+                <label
+                  class="checkbox__label"
+                  for="Price-Sort-Low-To-High-{{ section_id | default: 'main' }}-{{ filter_style }}{% if in_drawer %}-drawer{% endif %}"
+                  role="checkbox"
+                >
+                  {{ 'icon-checkmark.svg' | inline_asset_content }}
+                  <span class="checkbox__label-text">Low to High</span>
+                </label>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        {% if filter.min_value.value != null or filter.max_value.value != null or sort_by == 'price-descending' or sort_by == 'price-ascending' %}
           {% assign has_active_values = true %}
         {% endif %}
 
@@ -217,12 +275,37 @@
     font-size: var(--font-paragraph--size);
   }
 
-  .price-facet__highest-price {
-    padding: var(--padding-xs) 0 var(--padding-sm);
+  .price-facet__hint {
+    padding: var(--padding-xs) 0 var(--padding-xs);
+    font-size: var(--font-paragraph--size, 0.875rem);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-70, 0.7));
   }
 
-  .facets--horizontal .price-facet__highest-price {
-    padding: 0 var(--padding-md) var(--padding-xs);
+  .facets--horizontal .price-facet__hint {
+    padding: var(--padding-xs) var(--padding-md) var(--padding-xs);
+  }
+
+  .price-facet__sort-options {
+    padding: var(--padding-xs) 0 var(--padding-xs);
+    border-top: 1px solid rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
+    margin-top: var(--margin-xs);
+  }
+
+  .facets--horizontal .price-facet__sort-options {
+    padding: var(--padding-xs) var(--padding-md) var(--padding-xs);
+  }
+
+  .price-facet__sort-options .facets__inputs-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    margin: 0;
+    padding: 0;
+  }
+
+  .price-facet__sort-options .checkbox {
+    display: flex;
+    align-items: center;
   }
 
   .field__label.price-facet__label {

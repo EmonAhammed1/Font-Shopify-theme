@@ -4037,3 +4037,14 @@ text-component {
     font-size: max(1rem, 100%);
   }
 }
+
+/* Footer menu and links sizing */
+.footer-content .menu__item a,
+.footer-content a.link,
+footer .menu__item a,
+footer a.link,
+[id*="footer"] .menu__item a,
+[id*="footer"] a.link {
+  font-size: 1rem;
+  line-height: 1.6;
+}

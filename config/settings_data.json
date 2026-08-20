@@ -71,6 +71,11 @@
         "type": "shopify://apps/forms/blocks/forms/8744a304-fcb1-4347-b211-bb6b4759a76a",
         "disabled": false,
         "settings": {}
+      },
+      "10794961433538438357": {
+        "type": "shopify://apps/qorix-popup/blocks/app-embed/019d6763-b33b-779a-85d7-6d6cbed3b3bd",
+        "disabled": false,
+        "settings": {}
       }
     },
     "color_schemes": {

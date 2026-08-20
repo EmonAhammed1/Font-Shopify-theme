@@ -185,7 +185,7 @@
                           assign should_render_clear = false
                         endif
 
-                        render 'price-filter', filter: filter, filter_style: block_settings.filter_style, should_render_clear: should_render_clear
+                        render 'price-filter', filter: filter, filter_style: block_settings.filter_style, should_render_clear: should_render_clear, sort_by: sort_by, section_id: section.id, in_drawer: false
                       -%}
                     {% else %}
                       {% liquid
@@ -436,7 +436,7 @@
                           assign is_active = true
                         endif
 
-                        render 'price-filter', filter: filter, filter_style: 'vertical', should_render_clear: false
+                        render 'price-filter', filter: filter, filter_style: 'vertical', should_render_clear: false, sort_by: sort_by, section_id: section.id, in_drawer: true
                       -%}
                     {% else %}
                       {% liquid
